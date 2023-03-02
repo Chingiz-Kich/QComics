@@ -1,5 +1,25 @@
-heroku_deploy:
-  stage: production
+stages:
+  - build
+  - test
+  - deploy
+
+maven-build:
+  image: maven:3.8.3-openjdk-17
+  stage: build
+  script: "mvn package -B"
+
+maven-test:
+  image: maven:3.8.3-openjdk-17
+  stage: test
+  script: "mvn test -B"
+
+deploy:
+  stage: deploy
+  image: java:latest
   script:
+    - apt-get update -qy
+    - apt-get install -y java-dev
     - gem install dpl
-    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
+    - dpl --provider=heroku --app=q-comics-account --api-key=$HEROKU_API_KEY
+  only:
+    - master
