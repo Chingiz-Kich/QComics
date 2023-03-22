@@ -15,7 +15,7 @@ maven-test:
 
 deploy:
   stage: deploy
-  image: java:latest
+  image: ruby:latest
   script:
     - apt-get update -qy
     - apt-get install -y ruby-dev
