@@ -1,7 +1,7 @@
 package kz.comics.account.controller.auth;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import kz.comics.account.model.User;
 import kz.comics.account.service.AuthService;
 import kz.comics.account.model.auth.AuthenticationRequest;
 import kz.comics.account.model.auth.AuthenticationResponse;
@@ -22,7 +22,7 @@ public class AuthController {
 
     @Operation(summary = "Register a new user")
     @PostMapping(path = "/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<User> register(@RequestBody RegistrationRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 

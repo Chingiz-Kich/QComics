@@ -5,6 +5,7 @@ import kz.comics.account.model.User;
 import kz.comics.account.model.auth.AuthenticationRequest;
 import kz.comics.account.model.auth.AuthenticationResponse;
 import kz.comics.account.model.auth.RegistrationRequest;
+import kz.comics.account.model.mail.MailDto;
 import kz.comics.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final MailService mailService;
 
-    public AuthenticationResponse register(RegistrationRequest request) {
+    public User register(RegistrationRequest request) {
         User user = User.builder()
                 .username(request.getUsername())
                 .firstName(request.getFirstName())
@@ -34,11 +36,13 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
-        userRepository.save(user);
-        String jwt = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwt)
-                .build();
+
+        MailDto mailDto = new MailDto();
+        mailDto.setRecipient(request.getEmail());
+        mailDto.setSubject("Тестовая регистрация");
+        mailDto.setMsgBody("Поздравляю с регистрацией :) \n Данная регистрационная форма сделана исключительно для теста");
+        mailService.sendMail(mailDto);
+        return userRepository.save(user);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
