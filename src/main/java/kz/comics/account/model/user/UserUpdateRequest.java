@@ -1,5 +1,6 @@
-package kz.comics.account.model.auth;
+package kz.comics.account.model.user;
 
+import kz.comics.account.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,20 +10,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationRequest {
+public class UserUpdateRequest {
 
-    /**
-     * (Id) username для логина
-     */
     private String username;
-
-    /**
-     * Пароль
-     */
     private String password;
-
-    /**
-     * Почта
-     */
     private String email;
+    private Role role;
 }

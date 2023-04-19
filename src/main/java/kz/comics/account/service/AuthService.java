@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,8 +30,6 @@ public class AuthService {
     public User register(RegistrationRequest request) {
         User user = User.builder()
                 .username(request.getUsername())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .role(Role.USER)
                 .password(passwordEncoder.encode(request.getPassword()))
