@@ -6,9 +6,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import kz.comics.account.model.user.UserDto;
 import kz.comics.account.model.user.UserUpdateRequest;
 import kz.comics.account.service.UserService;
-import kz.comics.account.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,13 +23,13 @@ public class UserController {
 
     @Operation(summary = "Get user by username")
     @GetMapping("/{username}")
-    public ResponseEntity<User> getByUsername(@PathVariable String username) throws JsonProcessingException {
+    public ResponseEntity<UserDto> getByUsername(@PathVariable String username) throws JsonProcessingException {
         return ResponseEntity.ok(userService.getByUsername(username));
     }
 
     @Operation(summary = "Delete user account by username")
     @DeleteMapping("/{username}")
-    public ResponseEntity<User> deleteByUsername(@PathVariable String username) throws JsonProcessingException {
+    public ResponseEntity<UserDto> deleteByUsername(@PathVariable String username) throws JsonProcessingException {
         return ResponseEntity.ok(userService.deleteByUsername(username));
     }
 
@@ -44,7 +44,7 @@ public class UserController {
                             schema = @Schema(implementation = UsernameNotFoundException.class)))
     })
     @PostMapping(path = "/update")
-    public ResponseEntity<User> update(@RequestBody UserUpdateRequest updatedUser) throws JsonProcessingException {
+    public ResponseEntity<UserDto> update(@RequestBody UserUpdateRequest updatedUser) throws JsonProcessingException {
         return ResponseEntity.ok(userService.update(updatedUser));
     }
 }

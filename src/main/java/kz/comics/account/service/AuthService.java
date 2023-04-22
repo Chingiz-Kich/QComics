@@ -1,7 +1,9 @@
 package kz.comics.account.service;
 
-import kz.comics.account.model.Role;
-import kz.comics.account.model.User;
+import kz.comics.account.mapper.UserMapper;
+import kz.comics.account.model.user.Role;
+import kz.comics.account.model.user.UserDto;
+import kz.comics.account.model.user.UserEntity;
 import kz.comics.account.model.auth.AuthenticationRequest;
 import kz.comics.account.model.auth.AuthenticationResponse;
 import kz.comics.account.model.auth.RegistrationRequest;
@@ -26,9 +28,10 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
+    private final UserMapper userMapper;
 
-    public User register(RegistrationRequest request) {
-        User user = User.builder()
+    public UserDto register(RegistrationRequest request) {
+        UserEntity userEntity = UserEntity.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .role(Role.USER)
@@ -41,7 +44,7 @@ public class AuthService {
         mailDto.setSubject("Тестовая регистрация");
         mailDto.setMsgBody("Поздравляю с регистрацией :) \n Данная регистрационная форма сделана исключительно для теста");
         mailService.sendMail(mailDto);
-        return userRepository.save(user);
+        return userMapper.toDto(userRepository.save(userEntity));
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
@@ -52,10 +55,10 @@ public class AuthService {
         );
 
         // Если эта строчка выполняется, значит user authenticated
-        User user = userRepository.findUserByUsername(authenticationRequest.getUsername())
+        UserEntity userEntity = userRepository.findUserByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Username: %s not found", authenticationRequest.getUsername())));
 
-        String jwt = jwtService.generateToken(user);
+        String jwt = jwtService.generateToken(userEntity);
         return AuthenticationResponse.builder()
                 .token(jwt)
                 .build();
