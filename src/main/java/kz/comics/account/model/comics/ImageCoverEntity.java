@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "images")
-public class ImageEntity {
+@Table(name = "image_covers")
+public class ImageCoverEntity {
 
     @Id
     private Integer id;

@@ -1,26 +1,18 @@
 package kz.comics.account.model.comics;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-@Entity
-@Table(name = "images")
-public class ImageEntity {
+@NoArgsConstructor
+public class ImageDto {
 
-    @Id
     private Integer id;
-
-    @Column(name = "name", unique = true)
     private String name;
-
-    @Lob
-    @Column(name = "data")
     private String data;
+
 }

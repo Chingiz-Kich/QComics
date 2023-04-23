@@ -35,10 +35,10 @@ public class ComicsEntity {
     @Column(name = "author")
     private String author;
 
-    @OneToOne
-    private ImageEntity cover;
+    @OneToOne(cascade = CascadeType.ALL)
+    private ImageCoverEntity cover;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ImageEntity> chapters;
 
     @Column(name = "likes")

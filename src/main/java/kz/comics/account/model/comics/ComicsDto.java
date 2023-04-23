@@ -15,7 +15,7 @@ public class ComicsDto {
     private String name;
     private List<Genre> genres;
     private String author;
-    private ImageEntity cover;
-    private List<ImageEntity> chapters;
+    private ImageCoverEntity cover;
+    private List<ImageDto> chapters;
     private Integer likes;
 }
