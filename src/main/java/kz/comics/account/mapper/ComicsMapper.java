@@ -19,7 +19,8 @@ public class ComicsMapper {
                 .author(comicsDto.getAuthor())
                 .genres(new LinkedHashSet<>(comicsDto.getGenres()))
                 .cover(comicsDto.getCover())
-                .likes(comicsDto.getLikes())
+                .rating(comicsDto.getRating())
+                .rates(comicsDto.getRates())
                 .build();
 
         // FIXME: Негизи непонятно зачем я тут сохр если я пересохраняю в сервисе
@@ -34,7 +35,8 @@ public class ComicsMapper {
                 .genres(comicsEntity.getGenres().stream().toList())
                 .cover(comicsEntity.getCover())
                 .chapters(chapterMapper.toChapterDtoList(comicsEntity.getChapters()))
-                .likes(comicsEntity.getLikes())
+                .rating(comicsEntity.getRating())
+                .rates(comicsEntity.getRates())
                 .build();
     }
 }

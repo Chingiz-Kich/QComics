@@ -44,5 +44,8 @@ public class ComicsEntity {
     private List<ChapterEntity> chapters;
 
     @Column(name = "likes")
-    private Integer likes;
+    private Float rating;
+
+    @Column(name = "rates")
+    private Integer rates;
 }

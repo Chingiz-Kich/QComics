@@ -18,5 +18,6 @@ public class ComicsDto {
     private String author;
     private ImageCoverEntity cover;
     private List<ChapterDto> chapters;
-    private Integer likes;
+    private Float rating;
+    private Integer rates;
 }
