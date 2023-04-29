@@ -1,5 +1,6 @@
 package kz.comics.account.model.comics;
 
+import kz.comics.account.repository.entities.ImageCoverEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,6 @@ public class ComicsDto {
     private List<Genre> genres;
     private String author;
     private ImageCoverEntity cover;
-    private List<ImageDto> chapters;
+    private List<ChapterDto> chapters;
     private Integer likes;
 }

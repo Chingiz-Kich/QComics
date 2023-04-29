@@ -1,7 +1,7 @@
 package kz.comics.account.mapper;
 
 import kz.comics.account.model.user.UserDto;
-import kz.comics.account.model.user.UserEntity;
+import kz.comics.account.repository.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component

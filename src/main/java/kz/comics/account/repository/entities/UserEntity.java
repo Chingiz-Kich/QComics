@@ -1,6 +1,7 @@
-package kz.comics.account.model.user;
+package kz.comics.account.repository.entities;
 
 import jakarta.persistence.*;
+import kz.comics.account.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +38,10 @@ public class UserEntity implements UserDetails {
     // By default it is EnumType.ORDINAL: 0, 1, 2
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "comics_id", referencedColumnName = "id")
+    private List<ComicsEntity> comics;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

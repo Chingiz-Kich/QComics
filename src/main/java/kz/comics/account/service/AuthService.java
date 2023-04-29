@@ -3,7 +3,7 @@ package kz.comics.account.service;
 import kz.comics.account.mapper.UserMapper;
 import kz.comics.account.model.user.Role;
 import kz.comics.account.model.user.UserDto;
-import kz.comics.account.model.user.UserEntity;
+import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.auth.AuthenticationRequest;
 import kz.comics.account.model.auth.AuthenticationResponse;
 import kz.comics.account.model.auth.RegistrationRequest;

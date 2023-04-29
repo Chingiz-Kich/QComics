@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.UserMapper;
 import kz.comics.account.model.user.UserDto;
-import kz.comics.account.model.user.UserEntity;
+import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.user.UserUpdateRequest;
 import kz.comics.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

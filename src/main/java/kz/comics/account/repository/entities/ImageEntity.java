@@ -1,4 +1,4 @@
-package kz.comics.account.model.comics;
+package kz.comics.account.repository.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,9 +15,10 @@ import lombok.NoArgsConstructor;
 public class ImageEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "image_sequence")
     private Integer id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     private String name;
 
     @Lob

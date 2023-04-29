@@ -1,7 +1,7 @@
 package kz.comics.account.mapper;
 
 import kz.comics.account.model.comics.ImageDto;
-import kz.comics.account.model.comics.ImageEntity;
+import kz.comics.account.repository.entities.ImageEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,7 +12,6 @@ public class ImageMapper {
 
     public ImageEntity toEntity(ImageDto imageDto) {
         return ImageEntity.builder()
-                .id(imageDto.getId())
                 .name(imageDto.getName())
                 .data(imageDto.getData())
                 .build();
@@ -20,7 +19,6 @@ public class ImageMapper {
 
     public ImageDto toDto(ImageEntity imageEntity) {
         return ImageDto.builder()
-                .id(imageEntity.getId())
                 .name(imageEntity.getName())
                 .data(imageEntity.getData())
                 .build();

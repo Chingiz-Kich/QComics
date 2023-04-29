@@ -1,4 +1,4 @@
-package kz.comics.account.model.comics;
+package kz.comics.account.repository.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

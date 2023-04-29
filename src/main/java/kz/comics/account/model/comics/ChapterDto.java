@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.util.List;
+
 @Builder
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class ImageDto {
+@AllArgsConstructor
+public class ChapterDto {
     private String name;
-    private String data;
+    private String comicsName;
+    private List<ImageDto> images;
 }

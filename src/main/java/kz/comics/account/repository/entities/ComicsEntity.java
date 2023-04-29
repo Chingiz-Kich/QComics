@@ -1,6 +1,7 @@
-package kz.comics.account.model.comics;
+package kz.comics.account.repository.entities;
 
 import jakarta.persistence.*;
+import kz.comics.account.model.comics.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,7 +40,8 @@ public class ComicsEntity {
     private ImageCoverEntity cover;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<ImageEntity> chapters;
+    @JoinColumn(name = "chapters_id", referencedColumnName = "id")
+    private List<ChapterEntity> chapters;
 
     @Column(name = "likes")
     private Integer likes;
