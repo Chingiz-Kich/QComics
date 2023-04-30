@@ -43,4 +43,9 @@ public class ImageServiceImpl implements ImageService {
         List<ImageEntity> imageEntityList = imageRepository.getImageEntitiesByName(name);
         return imageMapper.toImageDtoList(imageEntityList);
     }
+
+    @Override
+    public ImageEntity getImageEntityByName(String name) {
+        return imageRepository.getImageEntityByName(name);
+    }
 }

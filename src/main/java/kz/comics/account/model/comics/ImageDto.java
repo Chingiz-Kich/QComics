@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ImageDto {
     private String name;
-    private String data;
+    private String base64;
 }

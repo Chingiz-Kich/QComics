@@ -5,6 +5,7 @@ import kz.comics.account.repository.entities.ImageEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Component
@@ -13,14 +14,14 @@ public class ImageMapper {
     public ImageEntity toEntity(ImageDto imageDto) {
         return ImageEntity.builder()
                 .name(imageDto.getName())
-                .data(imageDto.getData())
+                .data(Base64.getDecoder().decode(imageDto.getBase64()))
                 .build();
     }
 
     public ImageDto toDto(ImageEntity imageEntity) {
         return ImageDto.builder()
                 .name(imageEntity.getName())
-                .data(imageEntity.getData())
+                .base64(Base64.getEncoder().encodeToString(imageEntity.getData()))
                 .build();
     }
 

@@ -2,8 +2,12 @@ package kz.comics.account.controller.image;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.comics.ImageDto;
+import kz.comics.account.repository.entities.ImageEntity;
 import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,4 +37,14 @@ public class ImageController {
     public ResponseEntity<List<ImageDto>> save(@RequestParam String name) {
         return ResponseEntity.ok(imageService.getAllByName(name));
     }
-}
+
+    @Operation(summary = "Download image")
+    @GetMapping("/{name}")
+    public ResponseEntity<Resource> download(@PathVariable String name) {
+        ImageEntity imageEntity = imageService.getImageEntityByName(name);
+        byte[] value = imageEntity.getData();
+        ByteArrayResource resource = new ByteArrayResource(value);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+    }}

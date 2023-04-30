@@ -38,7 +38,7 @@ public class SecurityConfig {
                  * White list - some endpoints that not require any auth or any token, which just open
                  */
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/mail/**", "/api/v1/comics/**")
+                .requestMatchers("/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/mail/**", "/api/v1/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

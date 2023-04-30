@@ -23,5 +23,5 @@ public class ImageEntity {
 
     @Lob
     @Column(name = "data")
-    private String data;
+    private byte[] data;
 }
