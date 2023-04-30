@@ -1,6 +1,7 @@
 package kz.comics.account.repository.entities;
 
 import jakarta.persistence.*;
+import kz.comics.account.model.comics.ComicsType;
 import kz.comics.account.model.comics.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,4 +49,12 @@ public class ComicsEntity {
 
     @Column(name = "rates")
     private Integer rates;
+
+    @Column(name = "description")
+    private String description;
+
+    // @Enumerated - to tell Spring Boot that is enum
+    // By default it is EnumType.ORDINAL: 0, 1, 2
+    @Enumerated(EnumType.STRING)
+    private ComicsType type;
 }

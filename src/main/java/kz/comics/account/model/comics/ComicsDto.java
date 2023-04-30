@@ -20,4 +20,6 @@ public class ComicsDto {
     private List<ChapterDto> chapters;
     private Float rating;
     private Integer rates;
+    private String description;
+    private ComicsType type;
 }
