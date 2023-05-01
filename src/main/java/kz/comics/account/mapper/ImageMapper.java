@@ -13,6 +13,7 @@ public class ImageMapper {
 
     public ImageEntity toEntity(ImageDto imageDto) {
         return ImageEntity.builder()
+                .id(imageDto.getId())
                 .name(imageDto.getName())
                 .data(Base64.getDecoder().decode(imageDto.getBase64()))
                 .build();
@@ -20,6 +21,7 @@ public class ImageMapper {
 
     public ImageDto toDto(ImageEntity imageEntity) {
         return ImageDto.builder()
+                .id(imageEntity.getId())
                 .name(imageEntity.getName())
                 .base64(Base64.getEncoder().encodeToString(imageEntity.getData()))
                 .build();

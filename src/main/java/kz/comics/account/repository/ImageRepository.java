@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Integer> {
     List<ImageEntity> getImageEntitiesByName(String name);
-    ImageEntity getImageEntityByName(String name);
+    ImageEntity getImageEntityById(Integer id);
 }

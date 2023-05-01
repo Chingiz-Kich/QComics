@@ -9,5 +9,10 @@ public interface ImageService {
     ImageDto save(ImageDto imageDto);
     List<ImageDto> saveAll(List<ImageDto> imageDtoList);
     List<ImageDto> getAllByName(String name);
-    ImageEntity getImageEntityByName(String name);
+
+    // This method only for downloading
+    ImageEntity getImageEntityById(Integer id);
+
+    List<Integer> getListIdByName(String name);
+    ImageDto getImageById(Integer id);
 }

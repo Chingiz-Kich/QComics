@@ -20,6 +20,12 @@ public class ImageController {
 
     private final ImageService imageService;
 
+    @Operation(summary = "Get image by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ImageDto> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(imageService.getImageById(id));
+    }
+
     @Operation(summary = "Saving image")
     @PostMapping("/save")
     public ResponseEntity<ImageDto> save(@RequestBody ImageDto imageDto) {
@@ -38,13 +44,20 @@ public class ImageController {
         return ResponseEntity.ok(imageService.getAllByName(name));
     }
 
-    @Operation(summary = "Download image")
-    @GetMapping("/{name}")
-    public ResponseEntity<Resource> download(@PathVariable String name) {
-        ImageEntity imageEntity = imageService.getImageEntityByName(name);
+    @Operation(summary = "Download image by id")
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> download(@PathVariable Integer id) {
+        ImageEntity imageEntity = imageService.getImageEntityById(id);
         byte[] value = imageEntity.getData();
         ByteArrayResource resource = new ByteArrayResource(value);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
-    }}
+    }
+
+    @Operation(summary = "Get list of IDs by name")
+    @GetMapping("/id/{name}")
+    public ResponseEntity<List<Integer>> getIdsByName(@PathVariable String name) {
+        return ResponseEntity.ok(imageService.getListIdByName(name));
+    }
+}

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageDto {
+    private Integer id;
     private String name;
     private String base64;
 }

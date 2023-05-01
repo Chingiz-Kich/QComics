@@ -45,7 +45,20 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ImageEntity getImageEntityByName(String name) {
-        return imageRepository.getImageEntityByName(name);
+    public ImageEntity getImageEntityById(Integer id) {
+        return imageRepository.getImageEntityById(id);
+    }
+
+    @Override
+    public List<Integer> getListIdByName(String name) {
+        List<ImageEntity> imageEntityList = imageRepository.getImageEntitiesByName(name);
+        return imageEntityList.stream()
+                .map(ImageEntity::getId)
+                .toList();
+    }
+
+    @Override
+    public ImageDto getImageById(Integer id) {
+        return imageMapper.toDto(imageRepository.getImageEntityById(id));
     }
 }
