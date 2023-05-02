@@ -40,6 +40,7 @@ public class ComicsServiceImpl implements ComicsService {
     public ComicsDto saveComics(ComicsDto comicsDto) {
         log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicsDto));
 
+        //FIXME: Эта хрень должна быть в апдейте
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicsDto.getName())
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot fina comics with name: %s", comicsDto.getName())));
 
