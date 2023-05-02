@@ -12,13 +12,14 @@ import java.util.LinkedHashSet;
 public class ComicsMapper {
 
     private final ChapterMapper chapterMapper;
+    private final ImageCoverMapper imageCoverMapper;
 
     public ComicsEntity toEntity(ComicsDto comicsDto) {
         ComicsEntity comicsEntity = ComicsEntity.builder()
                 .name(comicsDto.getName())
                 .author(comicsDto.getAuthor())
                 .genres(new LinkedHashSet<>(comicsDto.getGenres()))
-                .cover(comicsDto.getCover())
+                .cover(imageCoverMapper.toEntity(comicsDto.getCover()))
                 .rating(comicsDto.getRating())
                 .rates(comicsDto.getRates())
                 .description(comicsDto.getDescription())
@@ -35,7 +36,7 @@ public class ComicsMapper {
                 .name(comicsEntity.getName())
                 .author(comicsEntity.getAuthor())
                 .genres(comicsEntity.getGenres().stream().toList())
-                .cover(comicsEntity.getCover())
+                .cover(imageCoverMapper.toDto(comicsEntity.getCover()))
                 .chapters(chapterMapper.toChapterDtoList(comicsEntity.getChapters()))
                 .rating(comicsEntity.getRating())
                 .rates(comicsEntity.getRates())

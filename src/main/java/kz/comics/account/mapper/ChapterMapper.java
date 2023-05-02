@@ -6,6 +6,7 @@ import kz.comics.account.repository.entities.ComicsEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
 import java.util.List;
 
 @Component
@@ -18,6 +19,7 @@ public class ChapterMapper {
         return ChapterDto.builder()
                 .name(chapterEntity.getName())
                 .images(imageMapper.toImageDtoList(chapterEntity.getImages()))
+                .base64(Base64.getEncoder().encodeToString(chapterEntity.getData()))
                 .build();
     }
 
@@ -26,6 +28,7 @@ public class ChapterMapper {
                 .name(chapterDto.getName())
                 .images(imageMapper.toImageEntityList(chapterDto.getImages()))
                 .comics(comicsEntity)
+                .data(Base64.getDecoder().decode(chapterDto.getBase64()))
                 .build();
     }
 

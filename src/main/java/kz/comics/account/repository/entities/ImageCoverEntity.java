@@ -22,5 +22,5 @@ public class ImageCoverEntity {
 
     @Lob
     @Column(name = "data")
-    private String data;
+    private byte[] data;
 }

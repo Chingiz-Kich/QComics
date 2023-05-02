@@ -3,6 +3,7 @@ package kz.comics.account.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.ChapterMapper;
 import kz.comics.account.mapper.ComicsMapper;
+import kz.comics.account.mapper.ImageCoverMapper;
 import kz.comics.account.model.comics.ComicsDto;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
@@ -30,6 +31,7 @@ public class ComicsServiceImpl implements ComicsService {
     private final ImageCoverRepository imageCoverRepository;
     private final ComicsMapper comicsMapper;
     private final ChapterMapper chapterMapper;
+    private final ImageCoverMapper imageCoverMapper;
     private final ObjectMapper objectMapper;
 
 
@@ -42,7 +44,7 @@ public class ComicsServiceImpl implements ComicsService {
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot fina comics with name: %s", comicsDto.getName())));
 
         List<ChapterEntity> chapterEntities = chapterRepository.saveAll(chapterMapper.toChapterEntityList(comicsDto.getChapters(), comicsEntity));
-        ImageCoverEntity imageCoverEntity = imageCoverRepository.save(comicsDto.getCover());
+        ImageCoverEntity imageCoverEntity = imageCoverRepository.save(imageCoverMapper.toEntity(comicsDto.getCover()));
 
         ComicsEntity check = comicsMapper.toEntity(comicsDto);
         check.setChapters(chapterEntities);

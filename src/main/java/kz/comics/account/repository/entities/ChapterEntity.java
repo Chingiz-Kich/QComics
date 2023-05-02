@@ -26,6 +26,9 @@ public class ChapterEntity {
     @JoinColumn(name = "comics_name", referencedColumnName = "name")
     private ComicsEntity comics;
 
+    @Column(name = "data")
+    private byte[] data;
+
     @OneToMany
     private List<ImageEntity> images;
 }
