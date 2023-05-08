@@ -2,6 +2,7 @@ package kz.comics.account.controller.chapter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.comics.ChapterDto;
+import kz.comics.account.model.comics.ChapterSaveDto;
 import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class ChapterController {
 
     @Operation(summary = "Saving chapter")
     @PostMapping("/save")
-    public ResponseEntity<ChapterDto> save(@RequestBody ChapterDto chapterDto) {
-        return ResponseEntity.ok(chapterService.save(chapterDto));
+    public ResponseEntity<ChapterDto> save(@RequestBody ChapterSaveDto chapterSaveDto) {
+        return ResponseEntity.ok(chapterService.save(chapterSaveDto));
     }
 }

@@ -11,13 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChapterDto {
-
-    private Integer id;
+public class ChapterSaveDto {
     private String name;
-
-    // FIXME: для чего я забыл
-    //private String comicsName;
-
     private List<Integer> imageIds;
 }

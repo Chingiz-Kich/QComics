@@ -11,14 +11,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ComicsDto {
+public class ComicSaveDto {
     private String name;
-    private List<Genre> genres;
     private String author;
-    private ImageCoverDto cover;
-    private List<ChapterDto> chapters;
-    private Float rating;
-    private Integer rates;
+    private String imageCoverBase64;
     private String description;
-    private ComicsType type;
+    private List<Genre> genres;
 }

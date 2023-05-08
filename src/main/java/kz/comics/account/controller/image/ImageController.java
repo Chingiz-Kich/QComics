@@ -34,7 +34,7 @@ public class ImageController {
 
     @Operation(summary = "Saving all images")
     @PostMapping("/saveAll")
-    public ResponseEntity<List<ImageDto>> save(@RequestBody List<ImageDto> imageDtoList) {
+    public ResponseEntity<List<Integer>> save(@RequestBody List<ImageDto> imageDtoList) {
         return ResponseEntity.ok(imageService.saveAll(imageDtoList));
     }
 

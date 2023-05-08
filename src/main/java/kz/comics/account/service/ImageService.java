@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ImageService {
     ImageDto save(ImageDto imageDto);
-    List<ImageDto> saveAll(List<ImageDto> imageDtoList);
+    List<Integer> saveAll(List<ImageDto> imageDtoList);
     List<ImageDto> getAllByName(String name);
 
     // This method only for downloading

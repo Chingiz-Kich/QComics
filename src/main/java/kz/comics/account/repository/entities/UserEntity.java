@@ -31,7 +31,7 @@ public class UserEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     // @Enumerated - to tell Spring Boot that is enum

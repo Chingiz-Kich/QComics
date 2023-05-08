@@ -1,3 +1,4 @@
+/*
 package kz.comics.account.mapper;
 
 import kz.comics.account.model.comics.ChapterDto;
@@ -18,7 +19,7 @@ public class ChapterMapper {
     public ChapterDto toDto(ChapterEntity chapterEntity) {
         return ChapterDto.builder()
                 .name(chapterEntity.getName())
-                .images(imageMapper.toImageDtoList(chapterEntity.getImages()))
+                .imageIds(imageMapper.toImageDtoList(chapterEntity.getImages()))
                 .base64(Base64.getEncoder().encodeToString(chapterEntity.getData()))
                 .build();
     }
@@ -46,3 +47,4 @@ public class ChapterMapper {
                 .toList();
     }
 }
+*/

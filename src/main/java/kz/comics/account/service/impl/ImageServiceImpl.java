@@ -28,14 +28,17 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageDto> saveAll(List<ImageDto> imageDtoList) {
+    public List<Integer> saveAll(List<ImageDto> imageDtoList) {
         log.info("Saving imageDtoList size: {}", imageDtoList.size());
         List<ImageEntity> imageEntityList = imageRepository.saveAll(imageMapper.toImageEntityList(imageDtoList));
         List<Integer> ids = imageEntityList.stream()
                 .map(ImageEntity::getId)
                 .toList();
         log.info("Saved imageDtoList size:{}, ids: {}", imageEntityList.size(), ids);
-        return imageMapper.toImageDtoList(imageEntityList);
+        return imageMapper.toImageDtoList(imageEntityList)
+                .stream()
+                .map(ImageDto::getId)
+                .toList();
     }
 
     @Override

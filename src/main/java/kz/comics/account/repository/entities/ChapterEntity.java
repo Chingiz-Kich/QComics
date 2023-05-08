@@ -17,17 +17,15 @@ import java.util.List;
 public class ChapterEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chapter_sequence")
     private Integer id;
 
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+/*    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comics_name", referencedColumnName = "name")
-    private ComicsEntity comics;
-
-    @Column(name = "data")
-    private byte[] data;
+    private ComicsEntity comics;*/
 
     @OneToMany
     private List<ImageEntity> images;

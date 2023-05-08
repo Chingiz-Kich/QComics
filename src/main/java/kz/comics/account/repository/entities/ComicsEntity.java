@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -37,8 +38,8 @@ public class ComicsEntity {
     @Column(name = "author")
     private String author;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ImageCoverEntity cover;
+    @Column(name = "cover_image")
+    private byte[] coverImage;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "chapters_id", referencedColumnName = "id")
@@ -57,4 +58,11 @@ public class ComicsEntity {
     // By default it is EnumType.ORDINAL: 0, 1, 2
     @Enumerated(EnumType.STRING)
     private ComicsType type;
+
+    @Column(name = "published_date")
+    private LocalDate publishedDate;
+
+    @Column(name = "is_updated")
+    private Boolean isUpdated;
+
 }
