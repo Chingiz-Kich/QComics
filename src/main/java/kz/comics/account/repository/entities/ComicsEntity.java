@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -38,6 +37,7 @@ public class ComicsEntity {
     @Column(name = "author")
     private String author;
 
+    @Lob
     @Column(name = "cover_image")
     private byte[] coverImage;
 
@@ -51,6 +51,7 @@ public class ComicsEntity {
     @Column(name = "rates")
     private Integer rates;
 
+    @Lob
     @Column(name = "description")
     private String description;
 
