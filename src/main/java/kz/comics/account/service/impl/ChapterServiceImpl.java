@@ -63,4 +63,21 @@ public class ChapterServiceImpl implements ChapterService {
                         .toList())
                 .build();
     }
+
+    @Override
+    public List<ChapterDto> getAll() {
+        List<ChapterEntity> chapterEntities = chapterRepository.findAll();
+
+        return chapterEntities.stream()
+                .map(chapterEntity -> ChapterDto
+                        .builder()
+                        .id(chapterEntity.getId())
+                        .name(chapterEntity.getName())
+                        .imageIds(chapterEntity.getImages()
+                                .stream()
+                                .map(ImageEntity::getId)
+                                .toList())
+                        .build())
+                .toList();
+    }
 }

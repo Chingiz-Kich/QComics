@@ -6,10 +6,9 @@ import kz.comics.account.model.comics.ChapterSaveDto;
 import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/chapter")
@@ -22,5 +21,11 @@ public class ChapterController {
     @PostMapping("/save")
     public ResponseEntity<ChapterDto> save(@RequestBody ChapterSaveDto chapterSaveDto) {
         return ResponseEntity.ok(chapterService.save(chapterSaveDto));
+    }
+
+    @Operation(summary = "Get all chapters")
+    @GetMapping("/all")
+    public ResponseEntity<List<ChapterDto>> getAll() {
+        return ResponseEntity.ok(chapterService.getAll());
     }
 }
