@@ -2,7 +2,6 @@ package kz.comics.account.controller.comics;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.comics.ComicDto;
-import kz.comics.account.model.comics.ComicSaveDto;
 import kz.comics.account.service.ComicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,8 @@ public class ComicController {
 
     @Operation(summary = "Save new comic")
     @PostMapping(path = "/save")
-    public ResponseEntity<ComicDto> save(@RequestBody ComicSaveDto comicSaveDto) {
-        return ResponseEntity.ok(comicService.saveComic(comicSaveDto));
+    public ResponseEntity<ComicDto> save(@RequestBody ComicDto comicDto) {
+        return ResponseEntity.ok(comicService.saveComic(comicDto));
     }
 
     @Operation(summary = "Get comic by name")

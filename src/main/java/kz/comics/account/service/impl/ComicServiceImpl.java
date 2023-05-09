@@ -35,16 +35,16 @@ public class ComicServiceImpl implements ComicService {
 
     @Override
     @SneakyThrows
-    public ComicDto saveComic(ComicSaveDto comicSaveDto) {
-        log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicSaveDto));
+    public ComicDto saveComic(ComicDto comicDto) {
+        log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicDto));
 
         ComicsEntity comicsEntity = ComicsEntity
                 .builder()
-                .name(comicSaveDto.getName())
-                .author(comicSaveDto.getAuthor())
-                .description(comicSaveDto.getDescription())
-                .coverImage((Base64.getDecoder().decode(comicSaveDto.getImageCoverBase64())))
-                .genres(new LinkedHashSet<>(comicSaveDto.getGenres()))
+                .name(comicDto.getName())
+                .author(comicDto.getAuthor())
+                .description(comicDto.getDescription())
+                .coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
+                .genres(new LinkedHashSet<>(comicDto.getGenres()))
                 .build();
 
         comicsEntity = comicsRepository.save(comicsEntity);
