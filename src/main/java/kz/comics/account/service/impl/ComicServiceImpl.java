@@ -3,7 +3,6 @@ package kz.comics.account.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.ImageCoverMapper;
 import kz.comics.account.model.comics.ComicDto;
-import kz.comics.account.model.comics.ComicSaveDto;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
@@ -92,10 +91,6 @@ public class ComicServiceImpl implements ComicService {
                 .author(comicsEntity.getAuthor())
                 .genres(comicsEntity.getGenres().stream().toList())
                 .imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
-                .chapterIds(comicsEntity.getChapters()
-                        .stream()
-                        .map(ChapterEntity::getId)
-                        .toList())
                 .rating(comicsEntity.getRating())
                 .rates(comicsEntity.getRates())
                 .description(comicsEntity.getDescription())
@@ -113,11 +108,6 @@ public class ComicServiceImpl implements ComicService {
                 .author(comicDto.getAuthor())
                 .genres(new LinkedHashSet<>(comicDto.getGenres()))
                 .coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
-                .chapters(comicDto.getChapterIds()
-                        .stream()
-                        .map(id -> chapterRepository.findById(id).
-                                orElseThrow(() -> new NoSuchElementException(String.format("Chapter with id: %s not found!", id))))
-                        .toList())
                 .rating(comicDto.getRating())
                 .rates(comicDto.getRates())
                 .description(comicDto.getDescription())

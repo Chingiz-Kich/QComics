@@ -41,9 +41,9 @@ public class ComicsEntity {
     @Column(name = "cover_image")
     private byte[] coverImage;
 
-    @OneToMany(cascade = CascadeType.ALL)
+/*    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "chapters_id", referencedColumnName = "id")
-    private List<ChapterEntity> chapters;
+    private List<ChapterEntity> chapters;*/
 
     @Column(name = "likes")
     private Float rating;

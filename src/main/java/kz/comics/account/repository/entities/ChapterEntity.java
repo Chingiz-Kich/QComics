@@ -23,9 +23,9 @@ public class ChapterEntity {
     @Column(name = "name")
     private String name;
 
-/*    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comics_name", referencedColumnName = "name")
-    private ComicsEntity comics;*/
+    private ComicsEntity comics;
 
     @OneToMany
     private List<ImageEntity> images;

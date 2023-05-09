@@ -15,6 +15,7 @@ public class ChapterDto {
 
     private Integer id;
     private String name;
+    private String comicName;
 
     // FIXME: для чего я забыл
     //private String comicsName;

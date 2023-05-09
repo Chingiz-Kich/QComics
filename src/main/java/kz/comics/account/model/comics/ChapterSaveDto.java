@@ -13,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ChapterSaveDto {
     private String name;
+    private String comicName;
     private List<Integer> imageIds;
 }
