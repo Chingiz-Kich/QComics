@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FilterRequest {
 
-    private String filed;
+    private String field;
     private Boolean ascending;
     private int page;
     private int size;

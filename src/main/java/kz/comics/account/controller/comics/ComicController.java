@@ -48,7 +48,7 @@ public class ComicController {
     @Operation(summary = "Find by specific field")
     @PostMapping("/findAll/filter")
     public ResponseEntity<List<ComicDto>> findAll(@RequestBody FilterRequest filterRequest) {
-        return ResponseEntity.ok(comicService.findAll(filterRequest.getFiled(), filterRequest.getAscending(), filterRequest.getPage(), filterRequest.getSize()));
+        return ResponseEntity.ok(comicService.findAll(filterRequest.getField(), filterRequest.getAscending(), filterRequest.getPage(), filterRequest.getSize()));
     }
 
     @Operation(summary = "Update comic")

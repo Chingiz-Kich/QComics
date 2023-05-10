@@ -1,18 +1,16 @@
 package kz.comics.account.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.comics.account.mapper.ImageCoverMapper;
-import kz.comics.account.model.comics.ChapterDto;
+
 import kz.comics.account.model.comics.ComicDto;
-import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.ComicsRepository;
-import kz.comics.account.repository.ImageCoverRepository;
 import kz.comics.account.service.ComicService;
 import kz.comics.account.util.ComicSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +38,7 @@ public class ComicServiceImpl implements ComicService {
         Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
         if (comics.isPresent()) throw new IllegalStateException(String.format("Comics with name: %s already exist", comicDto.getName()));
 
-        ComicsEntity comicsEntity = this.dtoToEntity(comicDto, false);
+        ComicsEntity comicsEntity = this.dtoToEntity(comicDto);
 
         comicsEntity = comicsRepository.save(comicsEntity);
         log.info("Saved comics: {}", objectMapper.writeValueAsString(comicsEntity));
@@ -74,10 +72,44 @@ public class ComicServiceImpl implements ComicService {
     @Transactional
     public ComicDto updateComic(ComicDto comicDto) {
 
-        Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
-        if (comics.isEmpty()) throw new IllegalStateException(String.format("Comics with name: %s does not exist", comicDto.getName()));
+        Optional<ComicsEntity> comicsEntityOptional = comicsRepository.getComicsEntitiesByName(comicDto.getName());
+        if (comicsEntityOptional.isEmpty()) throw new IllegalStateException(String.format("Comics with name: %s does not exist", comicDto.getName()));
 
-        ComicsEntity comicsEntity = this.dtoToEntity(comicDto, true);
+        ComicsEntity comicsEntity = comicsEntityOptional.get();
+
+        if (StringUtils.isNotBlank(comicDto.getAuthor())) {
+            comicsEntity.setAuthor(comicDto.getAuthor());
+        }
+
+        if (!comicDto.getGenres().isEmpty()) {
+            comicsEntity.setGenres(new LinkedHashSet<>(comicDto.getGenres()));
+        }
+
+        if (StringUtils.isNotBlank(comicDto.getImageCoverBase64())) {
+            comicsEntity.setCoverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())));
+        }
+
+        if (StringUtils.isNotBlank(comicDto.getDescription())) {
+            comicsEntity.setDescription(comicDto.getDescription());
+        }
+
+        if (comicDto.getRating() != null) {
+            comicsEntity.setRating(comicDto.getRating());
+        }
+
+        if (comicDto.getRates() != null) {
+            comicsEntity.setRates(comicDto.getRates());
+        }
+
+        if (comicDto.getType() != null) {
+            comicsEntity.setType(comicDto.getType());
+        }
+
+        if (comicDto.getPublishedDate() != null) {
+            comicsEntity.setPublishedDate(comicDto.getPublishedDate());
+        }
+
+        comicsEntity.setIsUpdated(true);
 
         comicsRepository.save(comicsEntity);
 
@@ -135,7 +167,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     // FIXME: This shit should be in ComicsMapper !!!!
-    private ComicsEntity dtoToEntity(ComicDto comicDto, Boolean isUpdate) {
+    private ComicsEntity dtoToEntity(ComicDto comicDto) {
         return ComicsEntity
                 .builder()
                 .name(comicDto.getName())
@@ -147,7 +179,7 @@ public class ComicServiceImpl implements ComicService {
                 .description(comicDto.getDescription())
                 .type(comicDto.getType())
                 .publishedDate(comicDto.getPublishedDate())
-                .isUpdated(isUpdate)
+                .isUpdated(false)
                 .build();
     }
 }
