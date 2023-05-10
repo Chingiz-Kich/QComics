@@ -11,4 +11,5 @@ public interface ComicService {
     ComicDto updateComic(ComicDto comicDto);
     ComicDto delete(String name);
     String deleteAll();
+    List<ComicDto> findAll(String field, Boolean ascending, int page, int size);
 }

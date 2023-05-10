@@ -25,7 +25,7 @@ public class UserEntity implements UserDetails {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")

@@ -23,7 +23,7 @@ public class ComicsEntity {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name")
     private String name;
 
     // @Enumerated - to tell Spring Boot that is enum

@@ -2,23 +2,26 @@ package kz.comics.account.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.ImageCoverMapper;
+import kz.comics.account.model.comics.ChapterDto;
 import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.ImageCoverRepository;
 import kz.comics.account.service.ComicService;
+import kz.comics.account.util.ComicSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -26,9 +29,6 @@ import java.util.NoSuchElementException;
 public class ComicServiceImpl implements ComicService {
 
     private final ComicsRepository comicsRepository;
-    private final ChapterRepository chapterRepository;
-    private final ImageCoverRepository imageCoverRepository;
-    private final ImageCoverMapper imageCoverMapper;
     private final ObjectMapper objectMapper;
 
 
@@ -36,6 +36,9 @@ public class ComicServiceImpl implements ComicService {
     @SneakyThrows
     public ComicDto saveComic(ComicDto comicDto) {
         log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicDto));
+
+        Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
+        if (comics.isPresent()) throw new IllegalStateException(String.format("Comics with name: %s already exist", comicDto.getName()));
 
         ComicsEntity comicsEntity = this.dtoToEntity(comicDto, false);
 
@@ -70,9 +73,12 @@ public class ComicServiceImpl implements ComicService {
     @Override
     @Transactional
     public ComicDto updateComic(ComicDto comicDto) {
+
+        Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
+        if (comics.isEmpty()) throw new IllegalStateException(String.format("Comics with name: %s does not exist", comicDto.getName()));
+
         ComicsEntity comicsEntity = this.dtoToEntity(comicDto, true);
 
-        comicsRepository.deleteByName(comicsEntity.getName());
         comicsRepository.save(comicsEntity);
 
         return this.entityToDto(comicsEntity);
@@ -91,6 +97,23 @@ public class ComicServiceImpl implements ComicService {
     public String deleteAll() {
         comicsRepository.deleteAll();
         return "easy peasy lemon squeezy";
+    }
+
+    @Override
+    public List<ComicDto> findAll(String field, Boolean ascending, int page, int size) {
+        Pageable pageable;
+        if (ascending) pageable = PageRequest.of(page, size, Sort.by(field).ascending());
+        else pageable = PageRequest.of(page, size, Sort.by(field).descending());
+
+        Page<ComicsEntity> comicsEntities;
+        if (ascending) comicsEntities = comicsRepository.findAll(ComicSpecification.orderByAsc(field), pageable);
+        else comicsEntities = comicsRepository.findAll(ComicSpecification.orderByDesc(field), pageable);
+
+
+        return comicsEntities
+                .stream()
+                .map(this::entityToDto)
+                .toList();
     }
 
 

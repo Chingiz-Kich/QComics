@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Builder
 @Data
@@ -26,7 +25,4 @@ public class ChapterEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comics_name", referencedColumnName = "name")
     private ComicsEntity comics;
-
-    @OneToMany
-    private List<ImageEntity> images;
 }

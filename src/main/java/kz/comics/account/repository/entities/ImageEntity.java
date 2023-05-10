@@ -21,6 +21,10 @@ public class ImageEntity {
     @Column(name = "name")
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chapter_name", referencedColumnName = "name")
+    private ChapterEntity chapter;
+
     @Lob
     @Column(name = "data")
     private byte[] data;

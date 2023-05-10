@@ -3,6 +3,7 @@ package kz.comics.account.controller.comics;
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.service.ComicService;
+import kz.comics.account.util.FilterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,12 @@ public class ComicController {
     @GetMapping("/all")
     public ResponseEntity<List<ComicDto>> getAll() {
         return ResponseEntity.ok(comicService.getAll());
+    }
+
+    @Operation(summary = "Find by specific field")
+    @PostMapping("/findAll/filter")
+    public ResponseEntity<List<ComicDto>> findAll(@RequestBody FilterRequest filterRequest) {
+        return ResponseEntity.ok(comicService.findAll(filterRequest.getFiled(), filterRequest.getAscending(), filterRequest.getPage(), filterRequest.getSize()));
     }
 
     @Operation(summary = "Update comic")

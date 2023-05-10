@@ -4,10 +4,8 @@ import kz.comics.account.model.comics.ChapterDto;
 import kz.comics.account.model.comics.ChapterSaveDto;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.ComicsRepository;
-import kz.comics.account.repository.ImageRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
-import kz.comics.account.repository.entities.ImageEntity;
 import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ChapterServiceImpl implements ChapterService {
 
-    private final ImageRepository imageRepository;
     private final ChapterRepository chapterRepository;
     private final ComicsRepository comicsRepository;
 
@@ -29,7 +26,6 @@ public class ChapterServiceImpl implements ChapterService {
     public ChapterDto save(ChapterSaveDto chapterSaveDto) {
         log.info("Saving chapterDto name: {}", chapterSaveDto.getName());
 
-        List<ImageEntity> imageEntityList = imageRepository.findAllById(chapterSaveDto.getImageIds());
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterSaveDto.getComicName())
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
 
@@ -37,7 +33,6 @@ public class ChapterServiceImpl implements ChapterService {
                 .builder()
                 .name(chapterSaveDto.getName())
                 .comics(comicsEntity)
-                .images(imageEntityList)
                 .build();
 
         chapterEntity = chapterRepository.save(chapterEntity);
@@ -48,10 +43,6 @@ public class ChapterServiceImpl implements ChapterService {
                 .id(chapterEntity.getId())
                 .name(chapterEntity.getName())
                 .comicName(comicsEntity.getName())
-                .imageIds(chapterEntity.getImages()
-                        .stream()
-                        .map(ImageEntity::getId)
-                        .toList())
                 .build();
     }
 
@@ -65,10 +56,6 @@ public class ChapterServiceImpl implements ChapterService {
                 .id(chapterEntity.getId())
                 .name(chapterEntity.getName())
                 .comicName(chapterEntity.getComics().getName())
-                .imageIds(chapterEntity.getImages()
-                        .stream()
-                        .map(ImageEntity::getId)
-                        .toList())
                 .build();
     }
 
@@ -82,10 +69,6 @@ public class ChapterServiceImpl implements ChapterService {
                         .id(chapterEntity.getId())
                         .name(chapterEntity.getName())
                         .comicName(chapterEntity.getComics().getName())
-                        .imageIds(chapterEntity.getImages()
-                                .stream()
-                                .map(ImageEntity::getId)
-                                .toList())
                         .build())
                 .toList();
     }
