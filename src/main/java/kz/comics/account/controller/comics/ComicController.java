@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author Chingiz
+ * @author Chin
  */
 @RestController
 @RequestMapping(path = "api/v1/comic")
