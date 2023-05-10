@@ -38,7 +38,6 @@ public class ComicServiceImpl implements ComicService {
 
         ComicsEntity comicsEntity = this.dtoToEntity(comicDto, false);
 
-        comicsRepository.deleteByName(comicsEntity.getName());
         comicsEntity = comicsRepository.save(comicsEntity);
         log.info("Saved comics: {}", objectMapper.writeValueAsString(comicsEntity));
 
@@ -69,6 +68,8 @@ public class ComicServiceImpl implements ComicService {
     @Override
     public ComicDto updateComic(ComicDto comicDto) {
         ComicsEntity comicsEntity = this.dtoToEntity(comicDto, true);
+
+        comicsRepository.deleteByName(comicsEntity.getName());
         comicsRepository.save(comicsEntity);
 
         return this.entityToDto(comicsEntity);
