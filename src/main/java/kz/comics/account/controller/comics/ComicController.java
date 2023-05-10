@@ -25,6 +25,13 @@ public class ComicController {
         return ResponseEntity.ok(comicService.saveComic(comicDto));
     }
 
+    @Operation(summary = "Save all comics")
+    @PutMapping("/saveAll")
+    public ResponseEntity<String> saveAll(@RequestBody List<ComicDto> comicDtos) {
+        comicDtos.forEach(comicService::saveComic);
+        return ResponseEntity.ok("All comics saved");
+    }
+
     @Operation(summary = "Get comic by name")
     @GetMapping("/{name}")
     public ResponseEntity<ComicDto> getByName(@PathVariable String name) {
