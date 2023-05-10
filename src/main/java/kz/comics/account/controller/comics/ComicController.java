@@ -42,7 +42,7 @@ public class ComicController {
 
     @Operation(summary = "Delete comic")
     @DeleteMapping("/{name}")
-    public ResponseEntity<ComicDto> delete(@RequestParam String name) {
+    public ResponseEntity<ComicDto> delete(@PathVariable String name) {
         return ResponseEntity.ok(comicService.delete(name));
     }
 }
