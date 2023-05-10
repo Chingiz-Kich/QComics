@@ -78,11 +78,12 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
+    @Transactional
     public ComicDto delete(String name) {
-        ComicsEntity comicsEntity = comicsRepository.deleteByName(name)
+        comicsRepository.deleteByName(name)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot delete comic with name: %s", name)));
 
-        return this.entityToDto(comicsEntity);
+        return new ComicDto();
     }
 
 
