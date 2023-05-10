@@ -38,6 +38,7 @@ public class ComicServiceImpl implements ComicService {
 
         ComicsEntity comicsEntity = this.dtoToEntity(comicDto, false);
 
+        comicsRepository.deleteByName(comicsEntity.getName());
         comicsEntity = comicsRepository.save(comicsEntity);
         log.info("Saved comics: {}", objectMapper.writeValueAsString(comicsEntity));
 
