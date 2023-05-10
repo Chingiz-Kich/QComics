@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Chingiz
+ */
 @RestController
 @RequestMapping(path = "api/v1/comic")
 @RequiredArgsConstructor
