@@ -75,10 +75,17 @@ public class ComicServiceImpl implements ComicService {
 
     @Override
     public ComicDto updateComic(ComicDto comicDto) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicDto.getName())
-                .orElseThrow(() -> new NoSuchElementException(String.format("Where is fucking comics? Name: %s", comicDto.getName())));
+        ComicsEntity comicsEntity = this.dtoToEntity(comicDto, true);
+        comicsRepository.save(comicsEntity);
 
-        comicsEntity = this.dtoToEntity(comicDto, true);
+        return this.entityToDto(comicsEntity);
+    }
+
+    @Override
+    public ComicDto delete(String name) {
+        ComicsEntity comicsEntity = comicsRepository.deleteByName(name)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot delete comic with name: %s", name)));
+
         return this.entityToDto(comicsEntity);
     }
 

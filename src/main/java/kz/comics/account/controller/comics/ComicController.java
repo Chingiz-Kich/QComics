@@ -39,4 +39,10 @@ public class ComicController {
     public ResponseEntity<ComicDto> update(@RequestBody ComicDto comicDto) {
         return ResponseEntity.ok(comicService.updateComic(comicDto));
     }
+
+    @Operation(summary = "Delete comic")
+    @DeleteMapping("/{name}")
+    public ResponseEntity<ComicDto> delete(@RequestParam String name) {
+        return ResponseEntity.ok(comicService.delete(name));
+    }
 }
