@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author Chin
+ * @author Chingiz
  */
 @RestController
 @RequestMapping(path = "api/v1/comic")
@@ -26,7 +26,7 @@ public class ComicController {
     }
 
     @Operation(summary = "Save all comics")
-    @PutMapping("/saveAll")
+    @PostMapping("/saveAll")
     public ResponseEntity<String> saveAll(@RequestBody List<ComicDto> comicDtos) {
         comicDtos.forEach(comicService::saveComic);
         return ResponseEntity.ok("All comics saved");
@@ -54,5 +54,11 @@ public class ComicController {
     @DeleteMapping("/{name}")
     public ResponseEntity<ComicDto> delete(@PathVariable String name) {
         return ResponseEntity.ok(comicService.delete(name));
+    }
+
+    @Operation(summary = "Delete all comics")
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAll() {
+        return ResponseEntity.ok(comicService.deleteAll());
     }
 }

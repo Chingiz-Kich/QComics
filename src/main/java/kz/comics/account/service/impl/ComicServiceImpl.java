@@ -47,6 +47,7 @@ public class ComicServiceImpl implements ComicService {
 
     @Override
     @SneakyThrows
+    @Transactional
     public ComicDto getComic(String comicName) {
         log.info("Get comics name: {}", comicName);
 
@@ -84,6 +85,12 @@ public class ComicServiceImpl implements ComicService {
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot delete comic with name: %s", name)));
 
         return new ComicDto();
+    }
+
+    @Override
+    public String deleteAll() {
+        comicsRepository.deleteAll();
+        return "easy peasy lemon squeezy";
     }
 
 
