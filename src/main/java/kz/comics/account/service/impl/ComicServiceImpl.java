@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.LinkedHashSet;
@@ -66,6 +67,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
+    @Transactional
     public ComicDto updateComic(ComicDto comicDto) {
         ComicsEntity comicsEntity = this.dtoToEntity(comicDto, true);
 
