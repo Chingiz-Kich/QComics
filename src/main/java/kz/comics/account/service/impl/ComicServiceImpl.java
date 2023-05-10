@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.ImageCoverMapper;
 import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.repository.ChapterRepository;
-import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.ImageCoverRepository;
@@ -37,14 +36,7 @@ public class ComicServiceImpl implements ComicService {
     public ComicDto saveComic(ComicDto comicDto) {
         log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicDto));
 
-        ComicsEntity comicsEntity = ComicsEntity
-                .builder()
-                .name(comicDto.getName())
-                .author(comicDto.getAuthor())
-                .description(comicDto.getDescription())
-                .coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
-                .genres(new LinkedHashSet<>(comicDto.getGenres()))
-                .build();
+        ComicsEntity comicsEntity = this.dtoToEntity(comicDto, false);
 
         comicsEntity = comicsRepository.save(comicsEntity);
         log.info("Saved comics: {}", objectMapper.writeValueAsString(comicsEntity));
