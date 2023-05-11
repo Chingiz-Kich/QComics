@@ -1,8 +1,11 @@
 package kz.comics.account.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.sun.jdi.request.InvalidRequestStateException;
 import kz.comics.account.model.comics.ComicDto;
+import kz.comics.account.model.comics.ComicsType;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.service.ComicService;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -148,6 +152,35 @@ public class ComicServiceImpl implements ComicService {
                 .toList();
     }
 
+    @Override
+    @SneakyThrows
+    public List<ComicDto> findMapAll(Map<String, Object> filters, Pageable pageable) {
+        Specification<ComicsEntity> spec = Specification.where(null);
+
+        for (String key : filters.keySet()) {
+            Object value = filters.get(key);
+            if (value != null) {
+                String stringValue = value.toString();
+                if (key.equals("type")) {
+                    try {
+                        ComicsType comicsType = objectMapper.readValue('"' + stringValue + '"', ComicsType.class);
+                        spec = spec.and((root, query, builder) -> builder.equal(root.get(key), comicsType));
+                    } catch (JsonProcessingException e) {
+                        throw new InvalidRequestStateException("Invalid filter value for key " + key);
+                    }
+                } else {
+                    spec = spec.and((root, query, builder) -> builder.equal(root.get(key), value));
+                }
+            }
+        }
+
+        Page<ComicsEntity> comicsEntities = comicsRepository.findAll(spec, pageable);
+
+        return comicsEntities
+                .stream()
+                .map(this::entityToDto)
+                .toList();
+    }
 
     // FIXME: This shit should be in ComicsMapper !!!!
     private ComicDto entityToDto(ComicsEntity comicsEntity) {

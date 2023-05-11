@@ -5,10 +5,12 @@ import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.service.ComicService;
 import kz.comics.account.util.FilterRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Chingiz
@@ -50,6 +52,12 @@ public class ComicController {
     @PostMapping("/findAll/filter")
     public ResponseEntity<List<ComicDto>> findAll(@RequestBody FilterRequest filterRequest) {
         return ResponseEntity.ok(comicService.findAll(filterRequest.getField(), filterRequest.getAscending(), filterRequest.getPage(), filterRequest.getSize()));
+    }
+
+    @Operation(summary = "Find by specific map filter")
+    @PostMapping("findAll/map")
+    public ResponseEntity<List<ComicDto>> findAllMap(@RequestBody Map<String, Object> filters, Pageable pageable) {
+        return ResponseEntity.ok(comicService.findMapAll(filters, pageable));
     }
 
     @Operation(summary = "Update comic")
