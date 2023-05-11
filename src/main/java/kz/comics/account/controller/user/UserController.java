@@ -47,4 +47,10 @@ public class UserController {
     public ResponseEntity<UserDto> update(@RequestBody UserUpdateRequest updatedUser) throws JsonProcessingException {
         return ResponseEntity.ok(userService.update(updatedUser));
     }
+
+    @Operation(summary = "Destroy users")
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAll() {
+        return ResponseEntity.ok(userService.deleteAll());
+    }
 }

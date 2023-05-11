@@ -75,4 +75,9 @@ public class UserService {
         log.info("In UserService. Update user from repository: {}", objectMapper.writeValueAsString(userEntitySaved));
         return userMapper.toDto(userEntitySaved);
     }
+
+    public String deleteAll() {
+        userRepository.deleteAll();
+        return "easy peasy lemon squeezy";
+    }
 }
