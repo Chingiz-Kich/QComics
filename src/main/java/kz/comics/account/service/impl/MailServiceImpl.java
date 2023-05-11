@@ -133,11 +133,12 @@ public class MailServiceImpl implements MailService {
         // Try block to check for exceptions handling
         try {
 
-            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
             // Setting up necessary details of mail
             mimeMessageHelper.setFrom(sender);
             mimeMessageHelper.setTo(mailDto.getRecipient());
             mimeMessageHelper.setSubject(mailDto.getSubject());
+            mimeMessageHelper.setText(mailDto.getMsgBody());
 
             // Sending the email
             mailSender.send(mimeMessage);
