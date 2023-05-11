@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author Chingiz
  */
+@CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/comic")
 @RequiredArgsConstructor
