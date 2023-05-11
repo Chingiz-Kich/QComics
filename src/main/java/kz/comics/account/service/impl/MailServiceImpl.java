@@ -125,6 +125,31 @@ public class MailServiceImpl implements MailService {
         }
     }
 
+    @Override
+    public String sendAuth(MailDto mailDto) {
+        // Creating a Mime Message
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper;
+        // Try block to check for exceptions handling
+        try {
+
+            mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            // Setting up necessary details of mail
+            mimeMessageHelper.setFrom(sender);
+            mimeMessageHelper.setTo(mailDto.getRecipient());
+            mimeMessageHelper.setSubject(mailDto.getSubject());
+
+            // Sending the email
+            mailSender.send(mimeMessage);
+            return "Email has been sent successfully...";
+        }
+        // Catch block to handle the exceptions
+        catch (Exception e) {
+            log.error("Error: ", e);
+            return "Error while Sending email!!!";
+        }
+    }
+
     private static String getHtmlContent(String filePath) {
         try {
             Path path = Paths.get(filePath);

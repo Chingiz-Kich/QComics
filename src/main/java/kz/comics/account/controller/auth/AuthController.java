@@ -2,6 +2,7 @@ package kz.comics.account.controller.auth;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.user.UserDto;
+import kz.comics.account.model.user.UserValidateNumber;
 import kz.comics.account.service.AuthService;
 import kz.comics.account.model.auth.AuthenticationRequest;
 import kz.comics.account.model.auth.AuthenticationResponse;
@@ -20,7 +21,7 @@ public class AuthController {
 
     @Operation(summary = "Register a new user")
     @PostMapping(path = "/register")
-    public ResponseEntity<UserDto> register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
@@ -29,4 +30,11 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity.ok(authService.authenticate(authenticationRequest));
     }
+
+    @Operation(summary = "Validate the number sent to email")
+    @PostMapping(path = "/validate")
+    public ResponseEntity<String> validate(@RequestBody UserValidateNumber userValidateNumber) {
+        return ResponseEntity.ok(authService.validateNumber(userValidateNumber.getUsername(), userValidateNumber.getNumber()));
+    }
+
 }
