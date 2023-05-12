@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +56,7 @@ public class ComicServiceImpl implements ComicService {
         log.info("Get comics name: {}", comicName);
 
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Comics name %s not found", comicName)));
+                .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
 
         log.info("Got comics from repository: {}", objectMapper.writeValueAsString(comicsEntity));
         return this.entityToDto(comicsEntity);

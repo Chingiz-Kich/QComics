@@ -1,3 +1,4 @@
+/*
 package kz.comics.account.config;
 
 import kz.comics.account.repository.UserRepository;
@@ -36,24 +37,30 @@ public class AppConfig {
         };
     }
 
-    /**
+    */
+/**
      * AuthenticationProvider - is the data access object (DAO) which is responsible to fetch the user details,
      * and also encode password and so on.
      * @return
-     */
+     *//*
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        /**
+        */
+/**
          * authProvider.setUserDetailsService() - we need to tell which userDetailsService use in order to fetch information about our user, because we might have multiple implementation of userDetails.
          * One for example getting the information from the database, another one based on  different profile fetching the users from in-memory database (ldap and etc.) and so on.
-         */
+         *//*
+
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
 
-        /**
+        */
+/**
          * This is minimum required information that we need to provide
-         */
+         *//*
+
         return authProvider;
     }
 
@@ -62,3 +69,4 @@ public class AppConfig {
         return new BCryptPasswordEncoder();
     }
 }
+*/

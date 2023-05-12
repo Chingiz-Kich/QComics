@@ -11,7 +11,6 @@ import kz.comics.account.model.user.UserUpdateRequest;
 import kz.comics.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,10 +37,6 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "In user update null found",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = IllegalArgumentException.class))),
-
-            @ApiResponse(responseCode = "500", description = "User not found",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UsernameNotFoundException.class)))
     })
     @PostMapping(path = "/update")
     public ResponseEntity<UserDto> update(@RequestBody UserUpdateRequest updatedUser) throws JsonProcessingException {

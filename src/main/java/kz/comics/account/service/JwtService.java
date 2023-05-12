@@ -1,3 +1,4 @@
+/*
 package kz.comics.account.service;
 
 import io.jsonwebtoken.Claims;
@@ -24,9 +25,11 @@ public class JwtService {
     private String SECRET_KEY;
 
     public String extractUsername(String token) {
-        /**
+        */
+/**
          * Claims::getSubject - subject should be email or username of user
-         */
+         *//*
+
         return extractClaims(token, Claims::getSubject);
     }
 
@@ -65,14 +68,16 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
-                /**
+                */
+/**
                  * JWT SingInKey - is a secret that is used to digitally sign the JWT
                  * SingInKey - is used to verify that the sender of JWT is who it claims to be and ensure that the message wasn't changed along the way
                  * SingInKey - is used in conjunction with the sign-in algorithm specified in JWT header to create the signature
                  * The specific sing-in algorithm and key size will depend on security requirement of your app and level of trust you have in sign-in party
                  *
                  * First, to do that we need to go ahead and generate new token/SignInKey/secretKey
-                 */
+                 *//*
+
                 .setSigningKey(this.getSignInKey())
                 .build()
                 .parseClaimsJws(token)
@@ -84,3 +89,4 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
+*/

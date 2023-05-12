@@ -10,9 +10,9 @@ import kz.comics.account.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -28,7 +28,7 @@ public class UserService {
         log.info("In UserService. getByUsername: {}", username);
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+                .orElseThrow(() -> new NoSuchElementException(String.format("Username %s not found", username)));
 
         log.info("In UserService. Got user from repository: {}", objectMapper.writeValueAsString(userEntity));
         return userMapper.toDto(userEntity);
@@ -38,7 +38,7 @@ public class UserService {
         log.info("In UserService. deleteByUsername: {}", username);
 
         UserEntity userEntity = userRepository.deleteByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+                .orElseThrow(() -> new NoSuchElementException(String.format("Username %s not found", username)));
 
         log.info("In UserService. Deleted user from repository: {}", objectMapper.writeValueAsString(userEntity));
         return userMapper.toDto(userEntity);
@@ -51,7 +51,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("In user update null found")));
 
         if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
+            throw new NoSuchElementException("User not found");
         }
 
 
