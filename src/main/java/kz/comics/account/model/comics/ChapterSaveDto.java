@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Builder
 @Data
 @NoArgsConstructor
@@ -14,5 +12,4 @@ import java.util.List;
 public class ChapterSaveDto {
     private String name;
     private String comicName;
-    private List<Integer> imageIds;
 }
