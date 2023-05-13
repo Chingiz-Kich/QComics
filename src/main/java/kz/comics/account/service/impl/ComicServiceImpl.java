@@ -175,10 +175,14 @@ public class ComicServiceImpl implements ComicService {
 
         Page<ComicsEntity> comicsEntities = comicsRepository.findAll(spec, pageable);
 
-        return comicsEntities
+        List<ComicDto> comicDtos =  comicsEntities
                 .stream()
                 .map(this::entityToDto)
                 .toList();
+
+        Collections.reverse(comicDtos);
+
+        return comicDtos;
     }
 
     // FIXME: This shit should be in ComicsMapper !!!!
