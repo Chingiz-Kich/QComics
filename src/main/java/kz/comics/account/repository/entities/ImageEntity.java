@@ -22,13 +22,13 @@ public class ImageEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comic_name", referencedColumnName = "name")
-    private ComicsEntity comics;
+    @JoinColumn(name = "comic_id", referencedColumnName = "id")
+    private ComicsEntity comicsEntity;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chapter_name", referencedColumnName = "name")
-    private ChapterEntity chapter;
+    @JoinColumn(name = "chapter_id", referencedColumnName = "id")
+    private ChapterEntity chapterEntity;
 
     @Lob
     @Column(name = "data")

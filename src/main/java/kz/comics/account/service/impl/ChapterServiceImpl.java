@@ -2,6 +2,7 @@ package kz.comics.account.service.impl;
 
 import kz.comics.account.model.comics.ChapterDto;
 import kz.comics.account.model.comics.ChapterSaveDto;
+import kz.comics.account.model.comics.ChapterUpdate;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
@@ -26,7 +27,7 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public ChapterDto save(ChapterSaveDto chapterSaveDto) {
-        log.info("Saving chapterDto name: {}", chapterSaveDto.getName());
+        log.info("Saving ChapterSaveDto name: {}", chapterSaveDto.getName());
 
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterSaveDto.getComicName())
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
@@ -34,7 +35,7 @@ public class ChapterServiceImpl implements ChapterService {
         ChapterEntity chapterEntity = ChapterEntity
                 .builder()
                 .name(chapterSaveDto.getName())
-                .comics(comicsEntity)
+                .comicsEntity(comicsEntity)
                 .build();
 
         chapterEntity = chapterRepository.save(chapterEntity);
@@ -51,13 +52,15 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public ChapterDto getById(Integer id) {
         ChapterEntity chapterEntity = chapterRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No chapter"));
+                .orElseThrow(() -> new NoSuchElementException(String.format("No chapter with id: %s", id)));
+
+        ComicsEntity comicsEntity = chapterEntity.getComicsEntity();
 
         return ChapterDto
                 .builder()
                 .id(chapterEntity.getId())
                 .name(chapterEntity.getName())
-                .comicName(chapterEntity.getComics().getName())
+                .comicName(comicsEntity.getName())
                 .build();
     }
 
@@ -70,8 +73,57 @@ public class ChapterServiceImpl implements ChapterService {
                         .builder()
                         .id(chapterEntity.getId())
                         .name(chapterEntity.getName())
-                        .comicName(chapterEntity.getComics().getName())
+                        .comicName(chapterEntity.getComicsEntity().getName())
                         .build())
                 .toList();
+    }
+
+    @Override
+    public List<ChapterDto> getByComicName(String comicName) {
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+
+        List<ChapterEntity> chapterEntities = chapterRepository.findAllByComicsEntity(comicsEntity)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapters with comic id: %s", comicsEntity.getId())));
+
+        return chapterEntities.stream()
+                .map(chapterEntity -> ChapterDto
+                        .builder()
+                        .id(chapterEntity.getId())
+                        .name(chapterEntity.getName())
+                        .comicName(comicName)
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public String deleteById(Integer id) {
+        chapterRepository.deleteById(id);
+        return "Chapter with id: " + id + " successfully deleted";
+    }
+
+    @Override
+    public ChapterDto update(ChapterUpdate chapterUpdate) {
+        log.info("Updating ChapterUpdate name: {}", chapterUpdate.getName());
+
+        ChapterEntity chapter = chapterRepository.findById(chapterUpdate.getId())
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with id: %s", chapterUpdate.getId())));;
+
+        ChapterEntity chapterEntity = ChapterEntity
+                .builder()
+                .id(chapterUpdate.getId())
+                .name(chapterUpdate.getName())
+                .comicsEntity(chapter.getComicsEntity())
+                .build();
+
+        chapterEntity = chapterRepository.save(chapterEntity);
+
+        log.info("Updated chapterDto name: {}, id: {}", chapterEntity.getName(), chapterEntity.getId());
+        return ChapterDto
+                .builder()
+                .id(chapterEntity.getId())
+                .name(chapterEntity.getName())
+                .comicName(chapterEntity.getComicsEntity().getName())
+                .build();
     }
 }

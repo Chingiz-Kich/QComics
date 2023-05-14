@@ -100,9 +100,11 @@ public class ComicServiceImpl implements ComicService {
             comicsEntity.setRating(comicDto.getRating());
         }
 
+/*
         if (comicDto.getRates() != null) {
             comicsEntity.setRates(comicDto.getRates());
         }
+*/
 
         if (comicDto.getType() != null) {
             comicsEntity.setType(comicDto.getType());
@@ -194,7 +196,7 @@ public class ComicServiceImpl implements ComicService {
                 .genres(comicsEntity.getGenres().stream().toList())
                 .imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
                 .rating(comicsEntity.getRating())
-                .rates(comicsEntity.getRates())
+                //.rates(comicsEntity.getRates())
                 .description(comicsEntity.getDescription())
                 .type(comicsEntity.getType())
                 .publishedDate(comicsEntity.getPublishedDate())
@@ -211,7 +213,7 @@ public class ComicServiceImpl implements ComicService {
                 .genres(new LinkedHashSet<>(comicDto.getGenres()))
                 .coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
                 .rating(comicDto.getRating())
-                .rates(comicDto.getRates())
+                //.rates(comicDto.getRates())
                 .description(comicDto.getDescription())
                 .type(comicDto.getType())
                 .publishedDate(comicDto.getPublishedDate())

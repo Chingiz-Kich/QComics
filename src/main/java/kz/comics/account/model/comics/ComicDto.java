@@ -20,7 +20,7 @@ public class ComicDto {
     private String imageCoverBase64;
     // private List<Integer> chapterIds;
     private Float rating;
-    private Integer rates;
+    //private Integer rates;
     private String description;
     private ComicsType type;
 

@@ -3,6 +3,7 @@ package kz.comics.account.controller.chapter;
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.comics.ChapterDto;
 import kz.comics.account.model.comics.ChapterSaveDto;
+import kz.comics.account.model.comics.ChapterUpdate;
 import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,23 @@ public class ChapterController {
     @GetMapping("/all")
     public ResponseEntity<List<ChapterDto>> getAll() {
         return ResponseEntity.ok(chapterService.getAll());
+    }
+
+    @Operation(summary = "Get chapters by comics name")
+    @GetMapping("/{comicName}")
+    public ResponseEntity<List<ChapterDto>> getByComicName(@PathVariable String comicName) {
+        return ResponseEntity.ok(chapterService.getByComicName(comicName));
+    }
+
+    @Operation(summary = "Delete chapter by id")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Integer id) {
+        return ResponseEntity.ok(chapterService.deleteById(id));
+    }
+
+    @Operation(summary = "Update chapter. U can update only chapter name :)")
+    @PutMapping("")
+    public ResponseEntity<ChapterDto> update(@RequestBody ChapterUpdate chapterUpdate) {
+        return ResponseEntity.ok(chapterService.update(chapterUpdate));
     }
 }

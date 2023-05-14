@@ -45,11 +45,8 @@ public class ComicsEntity {
     @JoinColumn(name = "chapters_id", referencedColumnName = "id")
     private List<ChapterEntity> chapters;*/
 
-    @Column(name = "likes")
+    @Column(name = "rating")
     private Float rating;
-
-    @Column(name = "rates")
-    private Integer rates;
 
     @Lob
     @Column(name = "description")
