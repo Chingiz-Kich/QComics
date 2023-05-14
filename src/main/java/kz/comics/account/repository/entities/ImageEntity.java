@@ -22,6 +22,11 @@ public class ImageEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comic_name", referencedColumnName = "name")
+    private ComicsEntity comics;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chapter_name", referencedColumnName = "name")
     private ChapterEntity chapter;
 
