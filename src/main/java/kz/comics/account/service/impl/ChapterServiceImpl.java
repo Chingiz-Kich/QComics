@@ -10,6 +10,7 @@ import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,6 +24,7 @@ public class ChapterServiceImpl implements ChapterService {
     private final ComicsRepository comicsRepository;
 
     @Override
+    @Transactional
     public ChapterDto save(ChapterSaveDto chapterSaveDto) {
         log.info("Saving chapterDto name: {}", chapterSaveDto.getName());
 
