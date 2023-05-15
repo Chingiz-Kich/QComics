@@ -54,6 +54,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional
     public ChapterDto getById(Integer id) {
         ChapterEntity chapterEntity = chapterRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(String.format("No chapter with id: %s", id)));
@@ -69,6 +70,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional
     public List<ChapterDto> getAll() {
         List<ChapterEntity> chapterEntities = chapterRepository.findAll();
 
@@ -83,6 +85,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional
     public List<ChapterDto> getByComicName(String comicName) {
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
@@ -101,12 +104,14 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional
     public String deleteById(Integer id) {
         chapterRepository.deleteById(id);
         return "Chapter with id: " + id + " successfully deleted";
     }
 
     @Override
+    @Transactional
     public ChapterDto update(ChapterUpdate chapterUpdate) {
         log.info("Updating ChapterUpdate name: {}", chapterUpdate.getName());
 
@@ -132,6 +137,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
+    @Transactional
     public String deleteAll() {
         chapterRepository.deleteAll();
         return "All chapters deleted";
