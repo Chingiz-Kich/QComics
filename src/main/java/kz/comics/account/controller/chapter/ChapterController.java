@@ -47,4 +47,10 @@ public class ChapterController {
     public ResponseEntity<ChapterDto> update(@RequestBody ChapterUpdate chapterUpdate) {
         return ResponseEntity.ok(chapterService.update(chapterUpdate));
     }
+
+    @Operation(summary = "Delete all chapters")
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAll() {
+        return ResponseEntity.ok(chapterService.deleteAll());
+    }
 }

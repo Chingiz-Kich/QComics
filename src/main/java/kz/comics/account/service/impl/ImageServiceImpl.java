@@ -3,7 +3,11 @@ package kz.comics.account.service.impl;
 import kz.comics.account.mapper.ImageMapper;
 import kz.comics.account.model.comics.ImageDto;
 import kz.comics.account.model.comics.ImageSaveDto;
+import kz.comics.account.repository.ChapterRepository;
+import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.ImageRepository;
+import kz.comics.account.repository.entities.ChapterEntity;
+import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.entities.ImageEntity;
 import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -18,13 +23,15 @@ import java.util.List;
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
+    private final ChapterRepository chapterRepository;
+    private final ComicsRepository comicsRepository;
     private final ImageMapper imageMapper;
 
     @Override
     public ImageDto save(ImageSaveDto imageSaveDto) {
-        log.info("Saving imageDto name: {}", imageSaveDto.getName());
+        log.info("Saving imageDto chapter name: {}", imageSaveDto.getChapterName());
         ImageEntity imageEntity = imageRepository.save(imageMapper.toEntity(imageSaveDto));
-        log.info("Saved imageEntity id: {}, name: {}", imageEntity.getName(), imageEntity.getId());
+        log.info("Saved imageEntity id: {}, chapter name: {}", imageEntity.getChapterEntity().getName(), imageEntity.getId());
         return imageMapper.toDto(imageEntity);
     }
 
@@ -43,26 +50,31 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageDto> getAllByName(String name) {
-        List<ImageEntity> imageEntityList = imageRepository.getImageEntitiesByName(name);
-        return imageMapper.toImageDtoList(imageEntityList);
-    }
-
-    @Override
-    public ImageEntity getImageEntityById(Integer id) {
+    public ImageEntity downloadById(Integer id) {
         return imageRepository.getImageEntityById(id);
     }
 
     @Override
-    public List<Integer> getListIdByName(String name) {
-        List<ImageEntity> imageEntityList = imageRepository.getImageEntitiesByName(name);
-        return imageEntityList.stream()
-                .map(ImageEntity::getId)
-                .toList();
+    public ImageDto getById(Integer id) {
+        return imageMapper.toDto(imageRepository.getImageEntityById(id));
     }
 
     @Override
-    public ImageDto getImageById(Integer id) {
-        return imageMapper.toDto(imageRepository.getImageEntityById(id));
+    public String deleteAll() {
+        imageRepository.deleteAll();
+        return "All images deleted";
+    }
+
+    @Override
+    public List<ImageDto> getAllByChapterNameAndComicName(String chapterName, String comicName) {
+        ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
+
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+
+        List<ImageEntity> imageEntityList = imageRepository.getAllByChapterEntityAndComicsEntity(chapterEntity, comicsEntity);
+
+        return imageMapper.toImageDtoList(imageEntityList);
     }
 }

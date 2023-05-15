@@ -24,7 +24,7 @@ public class ImageController {
     @Operation(summary = "Get image by id")
     @GetMapping("/{id}")
     public ResponseEntity<ImageDto> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(imageService.getImageById(id));
+        return ResponseEntity.ok(imageService.getById(id));
     }
 
     @Operation(summary = "Saving image")
@@ -39,16 +39,16 @@ public class ImageController {
         return ResponseEntity.ok(imageService.saveAll(imageSaveDtos));
     }
 
-    @Operation(summary = "Get all images by name")
+    @Operation(summary = "Get all images by chapter and comic name")
     @GetMapping("/getAll")
-    public ResponseEntity<List<ImageDto>> save(@RequestParam String name) {
-        return ResponseEntity.ok(imageService.getAllByName(name));
+    public ResponseEntity<List<ImageDto>> save(@RequestParam String chapterName, @RequestParam String comicName) {
+        return ResponseEntity.ok(imageService.getAllByChapterNameAndComicName(chapterName, comicName));
     }
 
     @Operation(summary = "Download image by id")
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> download(@PathVariable Integer id) {
-        ImageEntity imageEntity = imageService.getImageEntityById(id);
+        ImageEntity imageEntity = imageService.downloadById(id);
         byte[] value = imageEntity.getData();
         ByteArrayResource resource = new ByteArrayResource(value);
         return ResponseEntity.ok()
@@ -56,9 +56,9 @@ public class ImageController {
                 .body(resource);
     }
 
-    @Operation(summary = "Get list of IDs by name")
-    @GetMapping("/id/{name}")
-    public ResponseEntity<List<Integer>> getIdsByName(@PathVariable String name) {
-        return ResponseEntity.ok(imageService.getListIdByName(name));
+    @Operation(summary = "Delete all images")
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAll() {
+        return ResponseEntity.ok(imageService.deleteAll());
     }
 }

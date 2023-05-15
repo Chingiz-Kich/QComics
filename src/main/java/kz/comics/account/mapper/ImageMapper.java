@@ -22,7 +22,6 @@ public class ImageMapper {
 
     public ImageEntity toEntity(ImageSaveDto imageSaveDto) {
         return ImageEntity.builder()
-                .name(imageSaveDto.getName())
                 .comicsEntity(comicsRepository.getComicsEntitiesByName(imageSaveDto.getComicName())
                         .orElseThrow(() -> new NoSuchElementException(String.format("Cannot fina comics with name: %s", imageSaveDto.getComicName()))))
                 .chapterEntity(chapterRepository.getByName(imageSaveDto.getChapterName())
@@ -34,7 +33,6 @@ public class ImageMapper {
     public ImageEntity toEntity(ImageDto imageDto) {
         return ImageEntity.builder()
                 .id(imageDto.getId())
-                .name(imageDto.getName())
                 .comicsEntity(comicsRepository.getComicsEntitiesByName(imageDto.getComicName())
                         .orElseThrow(() -> new NoSuchElementException(String.format("Cannot fina comics with name: %s", imageDto.getComicName()))))
                 .chapterEntity(chapterRepository.getByName(imageDto.getChapterName())
@@ -46,7 +44,6 @@ public class ImageMapper {
     public ImageDto toDto(ImageEntity imageEntity) {
         return ImageDto.builder()
                 .id(imageEntity.getId())
-                .name(imageEntity.getName())
                 .comicName(imageEntity.getComicsEntity().getName())
                 .chapterName(imageEntity.getChapterEntity().getName())
                 .base64(Base64.getEncoder().encodeToString(imageEntity.getData()))

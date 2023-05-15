@@ -29,6 +29,10 @@ public class ChapterServiceImpl implements ChapterService {
     public ChapterDto save(ChapterSaveDto chapterSaveDto) {
         log.info("Saving ChapterSaveDto name: {}", chapterSaveDto.getName());
 
+        if (chapterRepository.getByName(chapterSaveDto.getName()).isPresent()) {
+            throw new IllegalStateException(String.format("Chapter with name: %s already exist!", chapterSaveDto.getName()));
+        }
+
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterSaveDto.getComicName())
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
 
@@ -125,5 +129,11 @@ public class ChapterServiceImpl implements ChapterService {
                 .name(chapterEntity.getName())
                 .comicName(chapterEntity.getComicsEntity().getName())
                 .build();
+    }
+
+    @Override
+    public String deleteAll() {
+        chapterRepository.deleteAll();
+        return "All chapters deleted";
     }
 }

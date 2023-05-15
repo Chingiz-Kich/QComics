@@ -13,4 +13,5 @@ public interface ChapterService {
     List<ChapterDto> getByComicName(String comicName);
     String deleteById(Integer id);
     ChapterDto update(ChapterUpdate chapterUpdate);
+    String deleteAll();
 }

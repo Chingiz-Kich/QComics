@@ -9,11 +9,11 @@ import java.util.List;
 public interface ImageService {
     ImageDto save(ImageSaveDto imageSaveDto);
     List<Integer> saveAll(List<ImageSaveDto> imageSaveDtos);
-    List<ImageDto> getAllByName(String name);
 
     // This method only for downloading
-    ImageEntity getImageEntityById(Integer id);
+    ImageEntity downloadById(Integer id);
 
-    List<Integer> getListIdByName(String name);
-    ImageDto getImageById(Integer id);
+    ImageDto getById(Integer id);
+    String deleteAll();
+    List<ImageDto> getAllByChapterNameAndComicName(String chapterName, String comicName);
 }

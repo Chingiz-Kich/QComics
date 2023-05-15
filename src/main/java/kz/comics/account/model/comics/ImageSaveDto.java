@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageSaveDto {
-    private String name;
     private String comicName;
     private String chapterName;
     private String base64;
