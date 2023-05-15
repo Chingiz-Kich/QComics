@@ -1,4 +1,4 @@
-/*
+/* RELOAD
 package kz.comics.account.mapper;
 
 import kz.comics.account.model.comics.*;
