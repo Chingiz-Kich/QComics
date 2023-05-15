@@ -2,6 +2,7 @@ package kz.comics.account.controller.image;
 
 import io.swagger.v3.oas.annotations.Operation;
 import kz.comics.account.model.comics.ImageDto;
+import kz.comics.account.model.comics.ImageSaveDto;
 import kz.comics.account.repository.entities.ImageEntity;
 import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +29,14 @@ public class ImageController {
 
     @Operation(summary = "Saving image")
     @PostMapping("/save")
-    public ResponseEntity<ImageDto> save(@RequestBody ImageDto imageDto) {
-        return ResponseEntity.ok(imageService.save(imageDto));
+    public ResponseEntity<ImageDto> save(@RequestBody ImageSaveDto imageSaveDto) {
+        return ResponseEntity.ok(imageService.save(imageSaveDto));
     }
 
     @Operation(summary = "Saving all images")
     @PostMapping("/saveAll")
-    public ResponseEntity<List<Integer>> save(@RequestBody List<ImageDto> imageDtoList) {
-        return ResponseEntity.ok(imageService.saveAll(imageDtoList));
+    public ResponseEntity<List<Integer>> save(@RequestBody List<ImageSaveDto> imageSaveDtos) {
+        return ResponseEntity.ok(imageService.saveAll(imageSaveDtos));
     }
 
     @Operation(summary = "Get all images by name")

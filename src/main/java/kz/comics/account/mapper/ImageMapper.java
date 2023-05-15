@@ -1,6 +1,7 @@
 package kz.comics.account.mapper;
 
 import kz.comics.account.model.comics.ImageDto;
+import kz.comics.account.model.comics.ImageSaveDto;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.entities.ImageEntity;
@@ -18,6 +19,17 @@ public class ImageMapper {
 
     private final ComicsRepository comicsRepository;
     private final ChapterRepository chapterRepository;
+
+    public ImageEntity toEntity(ImageSaveDto imageSaveDto) {
+        return ImageEntity.builder()
+                .name(imageSaveDto.getName())
+                .comicsEntity(comicsRepository.getComicsEntitiesByName(imageSaveDto.getComicName())
+                        .orElseThrow(() -> new NoSuchElementException(String.format("Cannot fina comics with name: %s", imageSaveDto.getComicName()))))
+                .chapterEntity(chapterRepository.getByName(imageSaveDto.getChapterName())
+                        .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", imageSaveDto.getChapterName()))))
+                .data(Base64.getDecoder().decode(imageSaveDto.getBase64()))
+                .build();
+    }
 
     public ImageEntity toEntity(ImageDto imageDto) {
         return ImageEntity.builder()
@@ -47,9 +59,9 @@ public class ImageMapper {
         return imageDtoList;
     }
 
-    public List<ImageEntity> toImageEntityList(List<ImageDto> imageDtoList) {
+    public List<ImageEntity> toImageEntityList(List<ImageSaveDto> imageSaveDtos) {
         List<ImageEntity> imageEntityList = new ArrayList<>();
-        imageDtoList.forEach(imageDto -> imageEntityList.add(this.toEntity(imageDto)));
+        imageSaveDtos.forEach(imageDto -> imageEntityList.add(this.toEntity(imageDto)));
         return imageEntityList;
     }
 }
