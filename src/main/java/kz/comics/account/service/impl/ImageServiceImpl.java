@@ -70,7 +70,7 @@ public class ImageServiceImpl implements ImageService {
         ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
 
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterName)
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         List<ImageEntity> imageEntityList = imageRepository.getAllByChapterEntityAndComicsEntity(chapterEntity, comicsEntity);
