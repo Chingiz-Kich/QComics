@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            // конченная хрень
             filterChain.doFilter(request, response);
             return;
         }
@@ -61,8 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         /**
          * We need always to pass the hand to the next filters to be executed
          */
-
-        // нахер надо е
         filterChain.doFilter(request, response);
     }
 }
