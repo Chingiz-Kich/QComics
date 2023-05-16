@@ -182,9 +182,10 @@ public class ComicServiceImpl implements ComicService {
                 .map(this::entityToDto)
                 .toList();
 
-        Collections.reverse(comicDtos);
+        List<ComicDto> reversedComicDtos = new ArrayList<>(comicDtos);
+        Collections.reverse(reversedComicDtos);
 
-        return comicDtos;
+        return reversedComicDtos;
     }
 
     // FIXME: This shit should be in ComicsMapper !!!!
