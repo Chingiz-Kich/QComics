@@ -1,4 +1,3 @@
-/*
 package kz.comics.account.config;
 
 import jakarta.servlet.FilterChain;
@@ -24,12 +23,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-    */
-/**
+    /**
      * Despite the fact that  org.springframework.security.core.userdetails already contains UserDetailsService interface
      * We need our own implementation, because we need to fetch our user from our database
-     *//*
-
+     */
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -37,26 +34,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             // конченная хрень
-            // filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
             return;
         }
         String jwt = authHeader.substring(7);
         String username = jwtService.extractUsername(jwt);
 
-        */
-/**
+        /**
          * if (SecurityContextHolder.getContext().getAuthentication() == null) - it means that user not authenticated yet
-         *//*
-
+         */
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                */
-/**
+                /**
                  * UsernamePasswordAuthenticationToken - is needed by Spring and by security context holder in order to upd our security context
                  * As we don't have credentials we pass null in parameter
-                 *//*
-
+                 */
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
@@ -65,14 +58,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        */
-/**
+        /**
          * We need always to pass the hand to the next filters to be executed
-         *//*
-
+         */
 
         // нахер надо е
-        //filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }
-*/

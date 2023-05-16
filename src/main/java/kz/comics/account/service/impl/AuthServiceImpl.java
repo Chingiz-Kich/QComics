@@ -9,12 +9,20 @@ import kz.comics.account.model.auth.RegistrationRequest;
 import kz.comics.account.model.mail.MailDto;
 import kz.comics.account.repository.UserRepository;
 import kz.comics.account.service.AuthService;
+import kz.comics.account.service.JwtService;
 import kz.comics.account.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -23,9 +31,10 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    //private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    //private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
     private final MailService mailService;
     private final UserMapper userMapper;
     private final Map<String, UserEntity> cache = new HashMap<>();
@@ -38,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .role(Role.USER)
-                .password(request.getPassword())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
 
@@ -63,19 +72,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-/*
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequest.getUsername(), authenticationRequest.getPassword()
                 )
         );
-*/
 
         // Если эта строчка выполняется, значит user authenticated
         UserEntity userEntity = userRepository.findUserByUsername(authenticationRequest.getUsername())
-                .orElseThrow(() -> new NoSuchElementException(String.format("Username: %s not found", authenticationRequest.getUsername())));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username: %s not found", authenticationRequest.getUsername())));
 
-        String jwt = "blablabla";
+        String jwt = jwtService.generateToken(userEntity);
         return AuthenticationResponse.builder()
                 .token(jwt)
                 .build();
