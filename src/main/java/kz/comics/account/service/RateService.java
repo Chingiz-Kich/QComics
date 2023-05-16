@@ -1,8 +1,10 @@
 package kz.comics.account.service;
 
+import kz.comics.account.model.rate.RateDto;
+
 public interface RateService {
-    Integer saveRate(String comicName, String username);
-    Integer getRate(String comicName, String username);
-    Integer updateRate(String comicName, String username);
+    RateDto saveRate(String comicName, String username, double rating);
+    Double getRate(String comicName, String username);
+    RateDto updateRate(String comicName, String username, double rating);
     String deleteRate(String comicName, String username);
 }

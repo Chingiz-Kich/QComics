@@ -15,4 +15,7 @@ public interface ComicService {
     String deleteAll();
     List<ComicDto> findAll(String field, Boolean ascending, int page, int size);
     List<ComicDto> findMapAll(Map<String, Object> filters, Pageable pageable);
+    void upVotes(String comicName);
+    void downVotes(String comicName);
+    void updateRating(String comicName, double rate);
 }

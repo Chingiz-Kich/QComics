@@ -26,5 +26,6 @@ public class RateEntity {
     @JoinColumn(name = "comics_id", referencedColumnName = "id")
     private ComicsEntity comics;
 
-    private Integer rating;
+    @Column(name = "rating")
+    private Double rating;
 }

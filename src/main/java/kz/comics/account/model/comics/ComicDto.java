@@ -19,8 +19,8 @@ public class ComicDto {
     private String author;
     private String imageCoverBase64;
     // private List<Integer> chapterIds;
-    private Float rating;
-    //private Integer rates;
+    private Double rating;
+    private Double votes;
     private String description;
     private ComicsType type;
 

@@ -188,6 +188,47 @@ public class ComicServiceImpl implements ComicService {
         return reversedComicDtos;
     }
 
+    @Override
+    @Transactional
+    public void upVotes(String comicName) {
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
+
+        double votes = comicsEntity.getVotes();
+        votes++;
+        comicsEntity.setVotes(votes);
+        comicsRepository.save(comicsEntity);
+    }
+
+    @Override
+    @Transactional
+    public void downVotes(String comicName) {
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
+
+        double votes = comicsEntity.getVotes();
+        votes--;
+        comicsEntity.setVotes(votes);
+        comicsRepository.save(comicsEntity);
+    }
+
+    @Override
+    @Transactional
+    public void updateRating(String comicName, double rate) {
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
+
+        double rating = comicsEntity.getRating();
+        rating += rate;
+
+        double votes = comicsEntity.getVotes();
+        rating /= votes;
+
+        comicsEntity.setRating(rating);
+        comicsRepository.save(comicsEntity);
+    }
+
+
     // FIXME: This shit should be in ComicsMapper !!!!
     private ComicDto entityToDto(ComicsEntity comicsEntity) {
         return ComicDto
@@ -197,7 +238,7 @@ public class ComicServiceImpl implements ComicService {
                 .genres(comicsEntity.getGenres().stream().toList())
                 .imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
                 .rating(comicsEntity.getRating())
-                //.rates(comicsEntity.getRates())
+                .votes(comicsEntity.getVotes())
                 .description(comicsEntity.getDescription())
                 .type(comicsEntity.getType())
                 .publishedDate(comicsEntity.getPublishedDate())
@@ -214,7 +255,7 @@ public class ComicServiceImpl implements ComicService {
                 .genres(new LinkedHashSet<>(comicDto.getGenres()))
                 .coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
                 .rating(comicDto.getRating())
-                //.rates(comicDto.getRates())
+                .votes(comicDto.getVotes())
                 .description(comicDto.getDescription())
                 .type(comicDto.getType())
                 .publishedDate(comicDto.getPublishedDate())
