@@ -18,7 +18,6 @@ public class ComicDto {
     private List<Genre> genres;
     private String author;
     private String imageCoverBase64;
-    // private List<Integer> chapterIds;
     private Double rating;
     private Double votes;
     private String description;

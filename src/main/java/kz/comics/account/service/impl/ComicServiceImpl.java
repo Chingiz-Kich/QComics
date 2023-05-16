@@ -39,6 +39,13 @@ public class ComicServiceImpl implements ComicService {
     public ComicDto saveComic(ComicDto comicDto) {
         log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicDto));
 
+        if (!comicDto.getImageCoverBase64().isBlank() && comicDto.getImageCoverBase64().startsWith("data:")) {
+            String base64 = comicDto.getImageCoverBase64();
+            int indexStart = base64.indexOf(",") + 1;
+            String modifiedBase64 = base64.substring(indexStart, base64.length());
+            comicDto.setImageCoverBase64(modifiedBase64);
+        }
+
         Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
         if (comics.isPresent()) throw new IllegalStateException(String.format("Comics with name: %s already exist", comicDto.getName()));
 
@@ -231,7 +238,7 @@ public class ComicServiceImpl implements ComicService {
 
 
     // FIXME: This shit should be in ComicsMapper !!!!
-    private ComicDto entityToDto(ComicsEntity comicsEntity) {
+    public ComicDto entityToDto(ComicsEntity comicsEntity) {
         return ComicDto
                 .builder()
                 .name(comicsEntity.getName())
@@ -248,7 +255,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     // FIXME: This shit should be in ComicsMapper !!!!
-    private ComicsEntity dtoToEntity(ComicDto comicDto) {
+    public ComicsEntity dtoToEntity(ComicDto comicDto) {
         return ComicsEntity
                 .builder()
                 .name(comicDto.getName())

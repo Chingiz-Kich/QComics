@@ -1,6 +1,5 @@
 package kz.comics.account.service.impl;
 
-import kz.comics.account.mapper.UserMapper;
 import kz.comics.account.model.user.Role;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.auth.AuthenticationRequest;
@@ -36,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
-    private final UserMapper userMapper;
     private final Map<String, UserEntity> cache = new HashMap<>();
     private final Map<String, Integer> redis = new HashMap<>();
     private static final Random random = new Random();
@@ -50,6 +48,13 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
+        if (userRepository.findUserByUsername(request.getUsername()).isPresent()) {
+            throw new IllegalStateException(String.format("User with username: %s already exist!", request.getUsername()));
+        }
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalStateException(String.format("User with email: %s already exist", request.getEmail()));
+        }
 
         int checkNumber = random.nextInt(9999 - 1000 + 1) + 1000;
 

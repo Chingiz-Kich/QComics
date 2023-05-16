@@ -43,6 +43,14 @@ public class UserEntity implements UserDetails {
     @JoinColumn(name = "comics_id", referencedColumnName = "id")
     private List<ComicsEntity> comics;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_bookmarks",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "comic_id")
+    )
+    private List<ComicsEntity> bookmarks;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

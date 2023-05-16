@@ -18,7 +18,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Account auth service")
+                .info(new Info().title("Q-comics project")
                 .version("1.0.0")
                         .description("Good luck!"))
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
