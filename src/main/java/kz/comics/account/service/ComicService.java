@@ -1,6 +1,7 @@
 package kz.comics.account.service;
 
 import kz.comics.account.model.comics.ComicDto;
+import kz.comics.account.repository.entities.ComicEntity;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface ComicService {
     void upVotes(String comicName);
     void downVotes(String comicName);
     void updateRating(String comicName, double rate);
+    void deleteByComicEntity(ComicEntity comicEntity);
 }

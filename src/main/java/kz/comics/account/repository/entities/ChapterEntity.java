@@ -24,5 +24,5 @@ public class ChapterEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comic_id", referencedColumnName = "id")
-    private ComicsEntity comicsEntity;
+    private ComicEntity comicEntity;
 }

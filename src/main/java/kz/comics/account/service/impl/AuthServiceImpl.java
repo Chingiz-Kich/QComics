@@ -8,7 +8,6 @@ import kz.comics.account.model.auth.RegistrationRequest;
 import kz.comics.account.model.mail.MailDto;
 import kz.comics.account.repository.UserRepository;
 import kz.comics.account.service.AuthService;
-import kz.comics.account.service.JwtService;
 import kz.comics.account.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

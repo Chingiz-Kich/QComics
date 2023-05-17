@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "comics")
-public class ComicsEntity {
+public class ComicEntity {
 
     @Id
     @GeneratedValue

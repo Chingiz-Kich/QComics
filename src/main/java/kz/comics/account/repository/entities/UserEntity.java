@@ -41,7 +41,7 @@ public class UserEntity implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "comics_id", referencedColumnName = "id")
-    private List<ComicsEntity> comics;
+    private List<ComicEntity> comics;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -49,7 +49,7 @@ public class UserEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "comic_id")
     )
-    private List<ComicsEntity> bookmarks;
+    private List<ComicEntity> bookmarks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

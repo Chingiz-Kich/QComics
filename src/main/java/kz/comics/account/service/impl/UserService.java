@@ -1,4 +1,4 @@
-package kz.comics.account.service;
+package kz.comics.account.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,11 +7,14 @@ import kz.comics.account.model.user.UserDto;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.user.UserUpdateRequest;
 import kz.comics.account.repository.UserRepository;
+import kz.comics.account.service.BookmarkService;
+import kz.comics.account.service.ComicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -23,6 +26,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final UserMapper userMapper;
+    private final ComicService comicService;
+    private final BookmarkService bookmarkService;
 
     public UserDto getByUsername(String username) throws JsonProcessingException {
         log.info("In UserService. getByUsername: {}", username);
@@ -77,6 +82,13 @@ public class UserService {
     }
 
     public String deleteAll() {
+        userRepository.findAll()
+                                .forEach(userEntity -> {
+                                    bookmarkService.deleteAllByUserEntity(userEntity);
+                                    userEntity.getComics()
+                                            .forEach(comicService::deleteByComicEntity);
+                                });
+
         userRepository.deleteAll();
         return "easy peasy lemon squeezy";
     }

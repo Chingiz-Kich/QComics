@@ -24,5 +24,5 @@ public class LikeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comics_id", referencedColumnName = "id")
-    private ComicsEntity comics;
+    private ComicEntity comics;
 }

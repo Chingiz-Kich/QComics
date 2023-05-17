@@ -6,8 +6,9 @@ import kz.comics.account.model.comics.ChapterUpdate;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
-import kz.comics.account.repository.entities.ComicsEntity;
+import kz.comics.account.repository.entities.ComicEntity;
 import kz.comics.account.service.ChapterService;
+import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class ChapterServiceImpl implements ChapterService {
 
     private final ChapterRepository chapterRepository;
     private final ComicsRepository comicsRepository;
+    private final ImageService imageService;
 
     @Override
     @Transactional
@@ -33,13 +35,13 @@ public class ChapterServiceImpl implements ChapterService {
             throw new IllegalStateException(String.format("Chapter with name: %s already exist!", chapterSaveDto.getName()));
         }
 
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterSaveDto.getComicName())
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(chapterSaveDto.getComicName())
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
 
         ChapterEntity chapterEntity = ChapterEntity
                 .builder()
                 .name(chapterSaveDto.getName())
-                .comicsEntity(comicsEntity)
+                .comicEntity(comicEntity)
                 .build();
 
         chapterEntity = chapterRepository.save(chapterEntity);
@@ -49,7 +51,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .builder()
                 .id(chapterEntity.getId())
                 .name(chapterEntity.getName())
-                .comicName(comicsEntity.getName())
+                .comicName(comicEntity.getName())
                 .build();
     }
 
@@ -59,13 +61,13 @@ public class ChapterServiceImpl implements ChapterService {
         ChapterEntity chapterEntity = chapterRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(String.format("No chapter with id: %s", id)));
 
-        ComicsEntity comicsEntity = chapterEntity.getComicsEntity();
+        ComicEntity comicEntity = chapterEntity.getComicEntity();
 
         return ChapterDto
                 .builder()
                 .id(chapterEntity.getId())
                 .name(chapterEntity.getName())
-                .comicName(comicsEntity.getName())
+                .comicName(comicEntity.getName())
                 .build();
     }
 
@@ -79,7 +81,7 @@ public class ChapterServiceImpl implements ChapterService {
                         .builder()
                         .id(chapterEntity.getId())
                         .name(chapterEntity.getName())
-                        .comicName(chapterEntity.getComicsEntity().getName())
+                        .comicName(chapterEntity.getComicEntity().getName())
                         .build())
                 .toList();
     }
@@ -87,11 +89,11 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public List<ChapterDto> getByComicName(String comicName) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
-        List<ChapterEntity> chapterEntities = chapterRepository.findAllByComicsEntity(comicsEntity)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapters with comic id: %s", comicsEntity.getId())));
+        List<ChapterEntity> chapterEntities = chapterRepository.findAllByComicsEntity(comicEntity)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapters with comic id: %s", comicEntity.getId())));
 
         return chapterEntities.stream()
                 .map(chapterEntity -> ChapterDto
@@ -106,6 +108,9 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public String deleteById(Integer id) {
+        ChapterEntity chapterEntity = chapterRepository.findById(id)
+                        .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with id: %s", id)));
+
         chapterRepository.deleteById(id);
         return "Chapter with id: " + id + " successfully deleted";
     }
@@ -122,7 +127,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .builder()
                 .id(chapterUpdate.getId())
                 .name(chapterUpdate.getName())
-                .comicsEntity(chapter.getComicsEntity())
+                .comicEntity(chapter.getComicEntity())
                 .build();
 
         chapterEntity = chapterRepository.save(chapterEntity);
@@ -132,7 +137,7 @@ public class ChapterServiceImpl implements ChapterService {
                 .builder()
                 .id(chapterEntity.getId())
                 .name(chapterEntity.getName())
-                .comicName(chapterEntity.getComicsEntity().getName())
+                .comicName(chapterEntity.getComicEntity().getName())
                 .build();
     }
 
@@ -141,5 +146,14 @@ public class ChapterServiceImpl implements ChapterService {
     public String deleteAll() {
         chapterRepository.deleteAll();
         return "All chapters deleted";
+    }
+
+    @Override
+    public void deleteAllByComicEntity(ComicEntity comicEntity) {
+        chapterRepository.findAllByComicsEntity(comicEntity)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with comicName: %s", comicEntity.getName())))
+                .forEach(chapterEntity -> imageService.deleteAllByChapterAndComicEntity(chapterEntity, comicEntity));
+
+        chapterRepository.deleteAllByComicsEntity(comicEntity);
     }
 }

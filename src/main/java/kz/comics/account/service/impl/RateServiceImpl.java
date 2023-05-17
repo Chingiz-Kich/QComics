@@ -4,7 +4,7 @@ import kz.comics.account.model.rate.RateDto;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.RateRepository;
 import kz.comics.account.repository.UserRepository;
-import kz.comics.account.repository.entities.ComicsEntity;
+import kz.comics.account.repository.entities.ComicEntity;
 import kz.comics.account.repository.entities.RateEntity;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.service.ComicService;
@@ -31,20 +31,20 @@ public class RateServiceImpl implements RateService {
     @Override
     @Transactional
     public RateDto saveRate(String comicName, String username, double rating) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
 
-        if (rateRepository.findRateEntityByComicsAndAndUser(comicsEntity, userEntity).isPresent()) {
+        if (rateRepository.findRateEntityByComicsAndAndUser(comicEntity, userEntity).isPresent()) {
             throw new IllegalStateException("This rate already exist");
         }
 
         RateEntity rateEntity = RateEntity
                 .builder()
                 .rating(rating)
-                .comics(comicsEntity)
+                .comics(comicEntity)
                 .user(userEntity)
                 .build();
 
@@ -63,13 +63,13 @@ public class RateServiceImpl implements RateService {
     @Override
     @Transactional
     public Double getRate(String comicName, String username) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
 
-        Optional<RateEntity> optionalRate = rateRepository.findRateEntityByComicsAndAndUser(comicsEntity, userEntity);
+        Optional<RateEntity> optionalRate = rateRepository.findRateEntityByComicsAndAndUser(comicEntity, userEntity);
 
         if (optionalRate.isEmpty()) {
             return -1d;
@@ -82,13 +82,13 @@ public class RateServiceImpl implements RateService {
     @Override
     @Transactional
     public RateDto updateRate(String comicName, String username, double rating) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
 
-        Optional<RateEntity> optionalRate = rateRepository.findRateEntityByComicsAndAndUser(comicsEntity, userEntity);
+        Optional<RateEntity> optionalRate = rateRepository.findRateEntityByComicsAndAndUser(comicEntity, userEntity);
 
         if (optionalRate.isEmpty()) {
             throw new IllegalStateException(String.format("Cannot find rate with comicName: %s and username: %s", comicName, username));
@@ -113,13 +113,13 @@ public class RateServiceImpl implements RateService {
     @Override
     @Transactional
     public String deleteRate(String comicName, String username) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
 
-        Optional<RateEntity> optionalRate = rateRepository.findRateEntityByComicsAndAndUser(comicsEntity, userEntity);
+        Optional<RateEntity> optionalRate = rateRepository.findRateEntityByComicsAndAndUser(comicEntity, userEntity);
 
         if (optionalRate.isEmpty()) {
             throw new IllegalStateException(String.format("Cannot find rate with comicName: %s and username: %s", comicName, username));

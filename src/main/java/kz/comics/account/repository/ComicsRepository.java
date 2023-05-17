@@ -1,6 +1,6 @@
 package kz.comics.account.repository;
 
-import kz.comics.account.repository.entities.ComicsEntity;
+import kz.comics.account.repository.entities.ComicEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ComicsRepository extends JpaRepository<ComicsEntity, Integer> {
+public interface ComicsRepository extends JpaRepository<ComicEntity, Integer> {
 
-    Optional<ComicsEntity> getComicsEntitiesByName(String name);
-    Optional<ComicsEntity> deleteByName(String name);
-    Page<ComicsEntity> findAll(Specification<ComicsEntity> spec, Pageable pageable);
+    Optional<ComicEntity> getComicsEntitiesByName(String name);
+    Optional<ComicEntity> deleteByName(String name);
+    Page<ComicEntity> findAll(Specification<ComicEntity> spec, Pageable pageable);
 
 }

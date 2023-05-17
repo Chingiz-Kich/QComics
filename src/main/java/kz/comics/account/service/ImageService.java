@@ -2,6 +2,8 @@ package kz.comics.account.service;
 
 import kz.comics.account.model.comics.ImageDto;
 import kz.comics.account.model.comics.ImageSaveDto;
+import kz.comics.account.repository.entities.ChapterEntity;
+import kz.comics.account.repository.entities.ComicEntity;
 import kz.comics.account.repository.entities.ImageEntity;
 
 import java.util.List;
@@ -16,4 +18,5 @@ public interface ImageService {
     ImageDto getById(Integer id);
     String deleteAll();
     List<ImageDto> getAllByChapterNameAndComicName(String chapterName, String comicName);
+    void deleteAllByChapterAndComicEntity(ChapterEntity chapterEntity, ComicEntity comicEntity);
 }

@@ -20,7 +20,7 @@ public class ImageEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comic_id", referencedColumnName = "id")
-    private ComicsEntity comicsEntity;
+    private ComicEntity comicEntity;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

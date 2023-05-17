@@ -24,5 +24,5 @@ public class BookmarkEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comic_id")
-    private ComicsEntity comic;
+    private ComicEntity comic;
 }

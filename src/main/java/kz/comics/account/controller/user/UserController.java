@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kz.comics.account.model.user.UserDto;
 import kz.comics.account.model.user.UserUpdateRequest;
-import kz.comics.account.service.UserService;
+import kz.comics.account.service.impl.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

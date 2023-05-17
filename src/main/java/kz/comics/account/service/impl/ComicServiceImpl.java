@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jdi.request.InvalidRequestStateException;
 import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.model.comics.ComicsType;
-import kz.comics.account.repository.entities.ComicsEntity;
+import kz.comics.account.repository.entities.ComicEntity;
 import kz.comics.account.repository.ComicsRepository;
+import kz.comics.account.service.ChapterService;
 import kz.comics.account.service.ComicService;
 import kz.comics.account.util.ComicSpecification;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class ComicServiceImpl implements ComicService {
 
     private final ComicsRepository comicsRepository;
     private final ObjectMapper objectMapper;
-
+    private final ChapterService chapterService;
 
     @Override
     @SneakyThrows
@@ -46,15 +46,15 @@ public class ComicServiceImpl implements ComicService {
             comicDto.setImageCoverBase64(modifiedBase64);
         }
 
-        Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
+        Optional<ComicEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
         if (comics.isPresent()) throw new IllegalStateException(String.format("Comics with name: %s already exist", comicDto.getName()));
 
-        ComicsEntity comicsEntity = this.dtoToEntity(comicDto);
+        ComicEntity comicEntity = this.dtoToEntity(comicDto);
 
-        comicsEntity = comicsRepository.save(comicsEntity);
-        log.info("Saved comics: {}", objectMapper.writeValueAsString(comicsEntity));
+        comicEntity = comicsRepository.save(comicEntity);
+        log.info("Saved comics: {}", objectMapper.writeValueAsString(comicEntity));
 
-        return this.entityToDto(comicsEntity);
+        return this.entityToDto(comicEntity);
     }
 
     @Override
@@ -63,16 +63,16 @@ public class ComicServiceImpl implements ComicService {
     public ComicDto getComic(String comicName) {
         log.info("Get comics name: {}", comicName);
 
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
 
-        log.info("Got comics from repository: {}", objectMapper.writeValueAsString(comicsEntity));
-        return this.entityToDto(comicsEntity);
+        log.info("Got comics from repository: {}", objectMapper.writeValueAsString(comicEntity));
+        return this.entityToDto(comicEntity);
     }
 
     @Override
     public List<ComicDto> getAll() {
-        List<ComicsEntity> comicsEntities = comicsRepository.findAll();
+        List<ComicEntity> comicsEntities = comicsRepository.findAll();
 
         return comicsEntities.stream()
                 .map(this::entityToDto)
@@ -83,29 +83,29 @@ public class ComicServiceImpl implements ComicService {
     @Transactional
     public ComicDto updateComic(ComicDto comicDto) {
 
-        Optional<ComicsEntity> comicsEntityOptional = comicsRepository.getComicsEntitiesByName(comicDto.getName());
+        Optional<ComicEntity> comicsEntityOptional = comicsRepository.getComicsEntitiesByName(comicDto.getName());
         if (comicsEntityOptional.isEmpty()) throw new IllegalStateException(String.format("Comics with name: %s does not exist", comicDto.getName()));
 
-        ComicsEntity comicsEntity = comicsEntityOptional.get();
+        ComicEntity comicEntity = comicsEntityOptional.get();
 
         if (StringUtils.isNotBlank(comicDto.getAuthor())) {
-            comicsEntity.setAuthor(comicDto.getAuthor());
+            comicEntity.setAuthor(comicDto.getAuthor());
         }
 
         if (!comicDto.getGenres().isEmpty()) {
-            comicsEntity.setGenres(new LinkedHashSet<>(comicDto.getGenres()));
+            comicEntity.setGenres(new LinkedHashSet<>(comicDto.getGenres()));
         }
 
         if (StringUtils.isNotBlank(comicDto.getImageCoverBase64())) {
-            comicsEntity.setCoverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())));
+            comicEntity.setCoverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())));
         }
 
         if (StringUtils.isNotBlank(comicDto.getDescription())) {
-            comicsEntity.setDescription(comicDto.getDescription());
+            comicEntity.setDescription(comicDto.getDescription());
         }
 
         if (comicDto.getRating() != null) {
-            comicsEntity.setRating(comicDto.getRating());
+            comicEntity.setRating(comicDto.getRating());
         }
 
 /*
@@ -115,23 +115,26 @@ public class ComicServiceImpl implements ComicService {
 */
 
         if (comicDto.getType() != null) {
-            comicsEntity.setType(comicDto.getType());
+            comicEntity.setType(comicDto.getType());
         }
 
         if (comicDto.getPublishedDate() != null) {
-            comicsEntity.setPublishedDate(comicDto.getPublishedDate());
+            comicEntity.setPublishedDate(comicDto.getPublishedDate());
         }
 
-        comicsEntity.setIsUpdated(true);
+        comicEntity.setIsUpdated(true);
 
-        comicsRepository.save(comicsEntity);
+        comicsRepository.save(comicEntity);
 
-        return this.entityToDto(comicsEntity);
+        return this.entityToDto(comicEntity);
     }
 
     @Override
     @Transactional
     public ComicDto delete(String name) {
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(name)
+                        .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", name)));
+
         comicsRepository.deleteByName(name)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot delete comic with name: %s", name)));
 
@@ -150,7 +153,7 @@ public class ComicServiceImpl implements ComicService {
         if (ascending) pageable = PageRequest.of(page, size, Sort.by(field).ascending());
         else pageable = PageRequest.of(page, size, Sort.by(field).descending());
 
-        Page<ComicsEntity> comicsEntities;
+        Page<ComicEntity> comicsEntities;
         if (ascending) comicsEntities = comicsRepository.findAll(ComicSpecification.orderByAsc(field), pageable);
         else comicsEntities = comicsRepository.findAll(ComicSpecification.orderByDesc(field), pageable);
 
@@ -164,7 +167,7 @@ public class ComicServiceImpl implements ComicService {
     @Override
     @SneakyThrows
     public List<ComicDto> findMapAll(Map<String, Object> filters, Pageable pageable) {
-        Specification<ComicsEntity> spec = Specification.where(null);
+        Specification<ComicEntity> spec = Specification.where(null);
 
         for (String key : filters.keySet()) {
             Object value = filters.get(key);
@@ -183,7 +186,7 @@ public class ComicServiceImpl implements ComicService {
             }
         }
 
-        Page<ComicsEntity> comicsEntities = comicsRepository.findAll(spec, pageable);
+        Page<ComicEntity> comicsEntities = comicsRepository.findAll(spec, pageable);
 
         List<ComicDto> comicDtos =  comicsEntities
                 .stream()
@@ -199,64 +202,69 @@ public class ComicServiceImpl implements ComicService {
     @Override
     @Transactional
     public void upVotes(String comicName) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
 
-        double votes = comicsEntity.getVotes();
+        double votes = comicEntity.getVotes();
         votes++;
-        comicsEntity.setVotes(votes);
-        comicsRepository.save(comicsEntity);
+        comicEntity.setVotes(votes);
+        comicsRepository.save(comicEntity);
     }
 
     @Override
     @Transactional
     public void downVotes(String comicName) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
 
-        double votes = comicsEntity.getVotes();
+        double votes = comicEntity.getVotes();
         votes--;
-        comicsEntity.setVotes(votes);
-        comicsRepository.save(comicsEntity);
+        comicEntity.setVotes(votes);
+        comicsRepository.save(comicEntity);
     }
 
     @Override
     @Transactional
     public void updateRating(String comicName, double rate) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+        ComicEntity comicEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
 
-        double rating = comicsEntity.getRating();
+        double rating = comicEntity.getRating();
         rating += rate;
 
-        double votes = comicsEntity.getVotes();
+        double votes = comicEntity.getVotes();
         rating /= votes;
 
-        comicsEntity.setRating(rating);
-        comicsRepository.save(comicsEntity);
+        comicEntity.setRating(rating);
+        comicsRepository.save(comicEntity);
+    }
+
+    @Override
+    public void deleteByComicEntity(ComicEntity comicEntity) {
+        chapterService.deleteAllByComicEntity(comicEntity);
     }
 
 
     // FIXME: This shit should be in ComicsMapper !!!!
-    public ComicDto entityToDto(ComicsEntity comicsEntity) {
+    public ComicDto entityToDto(ComicEntity comicEntity) {
         return ComicDto
                 .builder()
-                .name(comicsEntity.getName())
-                .author(comicsEntity.getAuthor())
-                .genres(comicsEntity.getGenres().stream().toList())
-                .imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
-                .rating(comicsEntity.getRating())
-                .votes(comicsEntity.getVotes())
-                .description(comicsEntity.getDescription())
-                .type(comicsEntity.getType())
-                .publishedDate(comicsEntity.getPublishedDate())
-                .isUpdated(comicsEntity.getIsUpdated())
+                .name(comicEntity.getName())
+                .author(comicEntity.getAuthor())
+                .genres(comicEntity.getGenres().stream().toList())
+                .imageCoverBase64(Base64.getEncoder().encodeToString(comicEntity.getCoverImage()))
+                .rating(comicEntity.getRating())
+                .votes(comicEntity.getVotes())
+                .description(comicEntity.getDescription())
+                .type(comicEntity.getType())
+                .publishedDate(comicEntity.getPublishedDate())
+                .isUpdated(comicEntity.getIsUpdated())
                 .build();
     }
 
     // FIXME: This shit should be in ComicsMapper !!!!
-    public ComicsEntity dtoToEntity(ComicDto comicDto) {
-        return ComicsEntity
+    public ComicEntity dtoToEntity(ComicDto comicDto) {
+        return ComicEntity
                 .builder()
                 .name(comicDto.getName())
                 .author(comicDto.getAuthor())

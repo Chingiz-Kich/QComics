@@ -3,7 +3,7 @@ package kz.comics.account.service.impl;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.LikeRepository;
 import kz.comics.account.repository.UserRepository;
-import kz.comics.account.repository.entities.ComicsEntity;
+import kz.comics.account.repository.entities.ComicEntity;
 import kz.comics.account.repository.entities.LikeEntity;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.service.LikeService;
@@ -28,12 +28,12 @@ public class LikeServiceImpl implements LikeService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userId)));
 
-        ComicsEntity comicsEntity = comicsRepository.findById(comicsId)
+        ComicEntity comicEntity = comicsRepository.findById(comicsId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comics with id: %s", comicsId)));
 
         LikeEntity likeEntity = LikeEntity
                 .builder()
-                .comics(comicsEntity)
+                .comics(comicEntity)
                 .user(userEntity)
                 .build();
 
@@ -46,10 +46,10 @@ public class LikeServiceImpl implements LikeService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userId)));
 
-        ComicsEntity comicsEntity = comicsRepository.findById(comicsId)
+        ComicEntity comicEntity = comicsRepository.findById(comicsId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comics with id: %s", comicsId)));
 
-        Optional<LikeEntity> likeEntity = likeRepository.findByUserAndComics(userEntity, comicsEntity);
+        Optional<LikeEntity> likeEntity = likeRepository.findByUserAndComics(userEntity, comicEntity);
 
         return likeEntity.isPresent();
     }
