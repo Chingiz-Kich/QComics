@@ -1,4 +1,4 @@
-package kz.comics.account.model.comics;
+package kz.comics.account.model.chapter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChapterSaveDto {
+public class ChapterDto {
+
+    private Integer id;
     private String name;
     private String comicName;
 }

@@ -10,5 +10,5 @@ public interface BookmarkService {
     String addComicToBookmarks(String comicName, String username);
     String removeComicFromBookmark(String comicName, String username);
     List<ComicDto> getAllBookmarkedComics(String username);
-
+    Boolean isBookmarked(String username, String comicName);
 }

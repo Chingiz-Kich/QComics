@@ -16,4 +16,5 @@ public interface ImageService {
     ImageDto getById(Integer id);
     String deleteAll();
     List<ImageDto> getAllByChapterNameAndComicName(String chapterName, String comicName);
+    List<Integer> getAllIdsByChapterAndComicName(String chapterName, String comicName);
 }

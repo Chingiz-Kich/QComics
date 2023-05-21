@@ -40,7 +40,7 @@ public class ImageController {
     }
 
     @Operation(summary = "Get all images by chapter and comic name")
-    @GetMapping("/getAll")
+    @GetMapping("/all")
     public ResponseEntity<List<ImageDto>> save(@RequestParam String chapterName, @RequestParam String comicName) {
         return ResponseEntity.ok(imageService.getAllByChapterNameAndComicName(chapterName, comicName));
     }
@@ -60,5 +60,11 @@ public class ImageController {
     @DeleteMapping("/all")
     public ResponseEntity<String> deleteAll() {
         return ResponseEntity.ok(imageService.deleteAll());
+    }
+
+    @Operation(summary = "Get IDs by chapter name and comic name")
+    @GetMapping("/ids")
+    public ResponseEntity<List<Integer>> getAllIdsByChapterAndComicName(@RequestParam String chapterName, @RequestParam String comicName) {
+        return ResponseEntity.ok(imageService.getAllIdsByChapterAndComicName(chapterName, comicName));
     }
 }

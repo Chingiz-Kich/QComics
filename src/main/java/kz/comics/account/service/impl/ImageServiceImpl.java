@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
@@ -29,7 +30,6 @@ public class ImageServiceImpl implements ImageService {
     private final ImageMapper imageMapper;
 
     @Override
-    @Transactional
     public ImageDto save(ImageSaveDto imageSaveDto) {
         log.info("Saving imageDto chapter name: {}", imageSaveDto.getChapterName());
         ImageEntity imageEntity = imageRepository.save(imageMapper.toEntity(imageSaveDto));
@@ -38,7 +38,6 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    @Transactional
     public List<Integer> saveAll(List<ImageSaveDto> imageSaveDtos) {
         log.info("Saving imageDtoList size: {}", imageSaveDtos.size());
         List<ImageEntity> imageEntityList = imageRepository.saveAll(imageMapper.toImageEntityList(imageSaveDtos));
@@ -53,26 +52,22 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    @Transactional
     public ImageEntity downloadById(Integer id) {
         return imageRepository.getImageEntityById(id);
     }
 
     @Override
-    @Transactional
     public ImageDto getById(Integer id) {
         return imageMapper.toDto(imageRepository.getImageEntityById(id));
     }
 
     @Override
-    @Transactional
     public String deleteAll() {
         imageRepository.deleteAll();
         return "All images deleted";
     }
 
     @Override
-    @Transactional
     public List<ImageDto> getAllByChapterNameAndComicName(String chapterName, String comicName) {
         ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
@@ -83,5 +78,13 @@ public class ImageServiceImpl implements ImageService {
         List<ImageEntity> imageEntityList = imageRepository.getAllByChapterEntityAndComicsEntity(chapterEntity, comicsEntity);
 
         return imageMapper.toImageDtoList(imageEntityList);
+    }
+
+    @Override
+    public List<Integer> getAllIdsByChapterAndComicName(String chapterName, String comicName) {
+        return this.getAllByChapterNameAndComicName(chapterName, comicName)
+                .stream()
+                .map(ImageDto::getId)
+                .toList();
     }
 }

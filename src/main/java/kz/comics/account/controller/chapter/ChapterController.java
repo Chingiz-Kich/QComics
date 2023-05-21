@@ -1,9 +1,9 @@
 package kz.comics.account.controller.chapter;
 
 import io.swagger.v3.oas.annotations.Operation;
-import kz.comics.account.model.comics.ChapterDto;
-import kz.comics.account.model.comics.ChapterSaveDto;
-import kz.comics.account.model.comics.ChapterUpdate;
+import kz.comics.account.model.chapter.ChapterDto;
+import kz.comics.account.model.chapter.ChapterSaveDto;
+import kz.comics.account.model.chapter.ChapterUpdate;
 import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

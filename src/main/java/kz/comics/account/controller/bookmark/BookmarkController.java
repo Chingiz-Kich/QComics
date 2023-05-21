@@ -29,12 +29,18 @@ public class BookmarkController {
     @Operation(summary = "Remove comic from bookmark")
     @DeleteMapping("/remove")
     public ResponseEntity<String> removeComicFromBookmark(@RequestBody BookmarkDto bookmarkDto) {
-        return ResponseEntity.ok(bookmarkService.addComicToBookmarks(bookmarkDto.getComicName(), bookmarkDto.getUsername()));
+        return ResponseEntity.ok(bookmarkService.removeComicFromBookmark(bookmarkDto.getComicName(), bookmarkDto.getUsername()));
     }
 
     @Operation(summary = "Get all bookmarked comics")
     @GetMapping("/all")
     public ResponseEntity<List<ComicDto>> getAllBookmarkedComics(@RequestParam String username) {
         return ResponseEntity.ok(bookmarkService.getAllBookmarkedComics(username));
+    }
+
+    @Operation(summary = "Check if certain comic is bookmarked")
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> isBookmarked(@RequestParam String username, @RequestParam String comicName) {
+        return ResponseEntity.ok(bookmarkService.isBookmarked(username, comicName));
     }
 }

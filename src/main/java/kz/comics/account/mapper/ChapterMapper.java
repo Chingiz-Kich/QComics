@@ -1,7 +1,7 @@
 /*
 package kz.comics.account.mapper;
 
-import kz.comics.account.model.comics.ChapterDto;
+import kz.comics.account.model.chapter.ChapterDto;
 import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
 import lombok.AllArgsConstructor;

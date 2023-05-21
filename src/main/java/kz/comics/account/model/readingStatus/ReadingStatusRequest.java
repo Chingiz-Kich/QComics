@@ -1,4 +1,4 @@
-package kz.comics.account.model.rate;
+package kz.comics.account.model.readingStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RateDto {
-    private String comicName;
+public class ReadingStatusRequest {
     private String username;
-    private Double rating;
+    private Integer chapterId;
 }

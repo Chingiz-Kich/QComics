@@ -71,4 +71,17 @@ public class BookmarkServiceImpl implements BookmarkService {
                 .map(comicServiceImpl::entityToDto)
                 .toList();
     }
+
+    @Override
+    public Boolean isBookmarked(String username, String comicName) {
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+
+        UserEntity userEntity = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
+
+        return userEntity.getBookmarks()
+                .stream()
+                .anyMatch(comic -> comic.equals(comicsEntity));
+    }
 }
