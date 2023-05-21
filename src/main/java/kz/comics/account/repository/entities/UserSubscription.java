@@ -11,18 +11,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_bookmarks")
-public class BookmarkEntity {
+@Table(name = "user_subscriptions")
+public class UserSubscription {
 
     @Id
     @GeneratedValue
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @JoinColumn(name = "subscriber_id")
+    private UserEntity subscriber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comic_id")
-    private ComicsEntity comic;
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }

@@ -18,6 +18,7 @@ public class UserMapper {
 
     public UserDto toDto(UserEntity userEntity) {
        return UserDto.builder()
+               .id(userEntity.getId())
                .username(userEntity.getUsername())
                .password(userEntity.getPassword())
                .email(userEntity.getEmail())

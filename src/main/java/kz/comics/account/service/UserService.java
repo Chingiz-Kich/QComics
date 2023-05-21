@@ -1,83 +1,23 @@
 package kz.comics.account.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.comics.account.mapper.UserMapper;
 import kz.comics.account.model.user.UserDto;
-import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.user.UserUpdateRequest;
-import kz.comics.account.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.List;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class UserService {
-
-    private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
-    private final UserMapper userMapper;
-
-    public UserDto getByUsername(String username) throws JsonProcessingException {
-        log.info("In UserService. getByUsername: {}", username);
-
-        UserEntity userEntity = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Username %s not found", username)));
-
-        log.info("In UserService. Got user from repository: {}", objectMapper.writeValueAsString(userEntity));
-        return userMapper.toDto(userEntity);
-    }
-
-    public UserDto deleteByUsername(String username) throws JsonProcessingException {
-        log.info("In UserService. deleteByUsername: {}", username);
-
-        UserEntity userEntity = userRepository.deleteByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Username %s not found", username)));
-
-        log.info("In UserService. Deleted user from repository: {}", objectMapper.writeValueAsString(userEntity));
-        return userMapper.toDto(userEntity);
-    }
-
-    public UserDto update(UserUpdateRequest updatedUser) throws JsonProcessingException {
-        log.info("In UserService. updatedUser: {}", objectMapper.writeValueAsString(updatedUser));
-
-        Optional<UserEntity> optionalUser = userRepository.findUserByUsername(Optional.ofNullable(updatedUser.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("In user update null found")));
-
-        if (optionalUser.isEmpty()) {
-            throw new NoSuchElementException("User not found");
-        }
-
-
-        UserEntity userEntity = UserEntity.builder()
-                .username(updatedUser.getUsername())
-                .build();
-
-        if (StringUtils.isNotBlank(updatedUser.getPassword())) {
-            userEntity.setPassword(updatedUser.getPassword());
-        }
-
-        if (StringUtils.isNotBlank(updatedUser.getEmail())) {
-            userEntity.setEmail(updatedUser.getEmail());
-        }
-
-        if (updatedUser.getRole() != null) {
-            userEntity.setRole(updatedUser.getRole());
-        }
-
-        UserEntity userEntitySaved = userRepository.save(userEntity);
-        log.info("In UserService. Update user from repository: {}", objectMapper.writeValueAsString(userEntitySaved));
-        return userMapper.toDto(userEntitySaved);
-    }
-
-    public String deleteAll() {
-        userRepository.deleteAll();
-        return "easy peasy lemon squeezy";
-    }
+public interface UserService {
+    UserDto getById(Integer id);
+    UserDto getByUsername(String username);
+    String deleteByUsername(String username);
+    UserDto update(UserUpdateRequest userUpdateRequest);
+    String deleteById(Integer id);
+    String deleteAll();
+    String subscribe(Integer subscriberId, Integer userToSubscribeId);
+    List<UserDto> getUserSubscriptions(Integer userId);
+    List<UserDto> getUserSubscribers(Integer userId);
+    String unsubscribe(Integer subscriberId, Integer userToUnsubscribeId);
+    String subscribe(String subscriberUsername, String userToSubscribeUsername);
+    List<UserDto> getUserSubscriptions(String username);
+    List<UserDto> getUserSubscribers(String username);
+    String unsubscribe(String subscriberUsername, String userToUnsubscribeUsername);
 }

@@ -1,6 +1,5 @@
 package kz.comics.account.controller.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,22 +13,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(path = "api/v1/user")
+@RequestMapping(path = "api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     @Operation(summary = "Get user by username")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getByUsername(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
     @GetMapping("/{username}")
-    public ResponseEntity<UserDto> getByUsername(@PathVariable String username) throws JsonProcessingException {
+    public ResponseEntity<UserDto> getByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getByUsername(username));
     }
 
     @Operation(summary = "Delete user account by username")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.deleteById(id));
+    }
+
     @DeleteMapping("/{username}")
-    public ResponseEntity<UserDto> deleteByUsername(@PathVariable String username) throws JsonProcessingException {
+    public ResponseEntity<String> deleteByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.deleteByUsername(username));
     }
 
@@ -44,7 +55,7 @@ public class UserController {
                             schema = @Schema(implementation = UsernameNotFoundException.class)))
     })
     @PostMapping(path = "/update")
-    public ResponseEntity<UserDto> update(@RequestBody UserUpdateRequest updatedUser) throws JsonProcessingException {
+    public ResponseEntity<UserDto> update(@RequestBody UserUpdateRequest updatedUser) {
         return ResponseEntity.ok(userService.update(updatedUser));
     }
 
@@ -52,5 +63,53 @@ public class UserController {
     @DeleteMapping("/all")
     public ResponseEntity<String> deleteAll() {
         return ResponseEntity.ok(userService.deleteAll());
+    }
+
+    @Operation(summary = "Subscribe by user id")
+    @PostMapping("/subscribe/id")
+    public ResponseEntity<String> subscribeById(@RequestParam Integer subscriberId, @RequestParam Integer userToSubscribeId) {
+        return ResponseEntity.ok(userService.subscribe(subscriberId, userToSubscribeId));
+    }
+
+    @Operation(summary = "Subscribe by user username")
+    @PostMapping("/subscribe/username")
+    public ResponseEntity<String> subscribeByUsername(@RequestParam String subscriberUsername, @RequestParam String userToSubscribeUsername) {
+        return ResponseEntity.ok(userService.subscribe(subscriberUsername, userToSubscribeUsername));
+    }
+
+    @Operation(summary = "Get user subscriptions by id")
+    @GetMapping("/subscriptions/{userId}")
+    public ResponseEntity<List<UserDto>> getUserSubscriptionsById(@PathVariable Integer userId) {
+        return ResponseEntity.ok(userService.getUserSubscriptions(userId));
+    }
+
+    @Operation(summary = "Get user subscriptions by username")
+    @GetMapping("/subscriptions/{username}")
+    public ResponseEntity<List<UserDto>> getUserSubscriptionsByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUserSubscriptions(username));
+    }
+
+    @Operation(summary = "Get user subscribers by id")
+    @GetMapping("/subscribers/{userId}")
+    public ResponseEntity<List<UserDto>> getUserSubscribersById(@PathVariable Integer userId) {
+        return ResponseEntity.ok(userService.getUserSubscribers(userId));
+    }
+
+    @Operation(summary = "Get user subscribers by username")
+    @GetMapping("/subscribers/{username}")
+    public ResponseEntity<List<UserDto>> getUserSubscribersByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUserSubscribers(username));
+    }
+
+    @Operation(summary = "Unsubscribe by id")
+    @PostMapping("/unsubscribe/id")
+    public ResponseEntity<String> unsubscribeById(@RequestParam Integer subscriberId, @RequestParam Integer userToUnsubscribeId) {
+        return ResponseEntity.ok(userService.unsubscribe(subscriberId, userToUnsubscribeId));
+    }
+
+    @Operation(summary = "Unsubscribe by username")
+    @PostMapping("/unsubscribe/username")
+    public ResponseEntity<String> unsubscribeByUsername(@RequestParam String subscriberUsername, @RequestParam String userToUnsubscribeUsername) {
+        return ResponseEntity.ok(userService.unsubscribe(subscriberUsername, userToUnsubscribeUsername));
     }
 }
