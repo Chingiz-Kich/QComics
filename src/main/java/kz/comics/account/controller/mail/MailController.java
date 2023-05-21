@@ -18,13 +18,13 @@ public class MailController {
     private final MailService mailService;
 
     @Operation(summary = "Sending email does not require attachment in request body")
-    @PostMapping("/send-mail")
+    @PostMapping("/send")
     public String sendMail(@RequestBody MailDto mailDto) {
         return mailService.sendMail(mailDto);
     }
 
     @Operation(summary = "Sending email with attachment")
-    @PostMapping("/send-mail-attachment")
+    @PostMapping("/send-attachment")
     public String sendMailWithAttachment(@RequestBody MailAttachmentDto mailAttachmentDto) {
         return mailService.sendMailWithAttachment(mailAttachmentDto);
     }

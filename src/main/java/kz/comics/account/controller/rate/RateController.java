@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping(path = "api/v1/rate")
+@RequestMapping(path = "api/v1/rates")
 @RequiredArgsConstructor
 public class RateController {
 

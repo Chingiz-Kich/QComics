@@ -13,7 +13,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
-@RequestMapping(path = "api/v1/chapter")
+@RequestMapping(path = "api/v1/chapters")
 @RequiredArgsConstructor
 public class ChapterController {
 

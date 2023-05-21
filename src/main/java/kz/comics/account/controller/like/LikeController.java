@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
-@RequestMapping(path = "api/v1/like")
+@RequestMapping(path = "api/v1/likes")
 @RequiredArgsConstructor
 public class LikeController {
 

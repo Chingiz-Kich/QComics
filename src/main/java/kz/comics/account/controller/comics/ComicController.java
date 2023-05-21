@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(path = "api/v1/comic")
+@RequestMapping(path = "api/v1/comics")
 @RequiredArgsConstructor
 public class ComicController {
 
