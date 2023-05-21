@@ -8,4 +8,5 @@ public interface AuthService {
     String register(RegistrationRequest request);
     AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest);
     String validateNumber(String username, Integer number);
+    String getToken();
 }

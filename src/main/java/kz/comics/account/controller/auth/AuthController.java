@@ -37,4 +37,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.validateNumber(userValidateNumber.getUsername(), userValidateNumber.getNumber()));
     }
 
+    @Operation(summary = "Get token for test")
+    @GetMapping("/token")
+    public ResponseEntity<String> getToken(){
+        return ResponseEntity.ok(authService.getToken());
+    }
 }

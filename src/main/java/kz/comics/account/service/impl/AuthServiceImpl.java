@@ -109,4 +109,16 @@ public class AuthServiceImpl implements AuthService {
             return "Failed";
         }
     }
+
+    @Override
+    public String getToken() {
+        return jwtService.generateToken(UserEntity
+                        .builder()
+                        .id(123)
+                        .username("bla-bla")
+                        .role(Role.USER)
+                        .password("pass")
+                        .email("e@mail.ru")
+                        .build());
+    }
 }
