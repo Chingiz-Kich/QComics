@@ -12,6 +12,7 @@ public interface ImageService {
 
     // This method only for downloading
     ImageEntity downloadById(Integer id);
+    List<ImageEntity> downloadAll( String chapterName, String comicName);
 
     ImageDto getById(Integer id);
     String deleteAll();

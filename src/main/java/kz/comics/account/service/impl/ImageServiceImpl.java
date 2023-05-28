@@ -60,6 +60,18 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
+    public List<ImageEntity> downloadAll( String chapterName, String comicName) {
+        ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
+
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+
+        return imageRepository.getAllByChapterEntityAndComicsEntity(chapterEntity, comicsEntity);
+    }
+
+    @Override
+    @Transactional
     public ImageDto getById(Integer id) {
         return imageMapper.toDto(imageRepository.getImageEntityById(id));
     }
