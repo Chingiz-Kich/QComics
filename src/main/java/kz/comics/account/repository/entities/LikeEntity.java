@@ -23,6 +23,6 @@ public class LikeEntity {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comics_id", referencedColumnName = "id")
-    private ComicsEntity comics;
+    @JoinColumn(name = "chapter_id", referencedColumnName = "id")
+    private ChapterEntity chapter;
 }

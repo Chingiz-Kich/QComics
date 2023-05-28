@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ChapterSaveDto {
     private String name;
     private String comicName;
+    private Integer comicId;
 }

@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ChapterServiceImpl implements ChapterService {
 
@@ -26,7 +27,7 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     @Transactional
-    public ChapterDto save(ChapterSaveDto chapterSaveDto) {
+    public ChapterDto saveByComicName(ChapterSaveDto chapterSaveDto) {
         log.info("Saving ChapterSaveDto name: {}", chapterSaveDto.getName());
 
         if (chapterRepository.getByName(chapterSaveDto.getName()).isPresent()) {
@@ -44,7 +45,35 @@ public class ChapterServiceImpl implements ChapterService {
 
         chapterEntity = chapterRepository.save(chapterEntity);
 
-        log.info("Saved chapterDto name: {}, id: {}", chapterEntity.getName(), chapterEntity.getId());
+        log.info("Saved chapterEntity name: {}, id: {}", chapterEntity.getName(), chapterEntity.getId());
+        return ChapterDto
+                .builder()
+                .id(chapterEntity.getId())
+                .name(chapterEntity.getName())
+                .comicName(comicsEntity.getName())
+                .build();
+    }
+
+    @Override
+    public ChapterDto saveByComicId(ChapterSaveDto chapterSaveDto) {
+        log.info("Saving ChapterSaveDto comic id: {}", chapterSaveDto.getComicId());
+
+        if (chapterRepository.findById(chapterSaveDto.getComicId()).isPresent()) {
+            throw new IllegalStateException(String.format("Chapter with name: %s already exist!", chapterSaveDto.getName()));
+        }
+
+        ComicsEntity comicsEntity = comicsRepository.findById(chapterSaveDto.getComicId())
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
+
+        ChapterEntity chapterEntity = ChapterEntity
+                .builder()
+                .name(chapterSaveDto.getName())
+                .comicsEntity(comicsEntity)
+                .build();
+
+        chapterEntity = chapterRepository.save(chapterEntity);
+
+        log.info("Saved chapterEntity name: {}, id: {}", chapterEntity.getName(), chapterEntity.getId());
         return ChapterDto
                 .builder()
                 .id(chapterEntity.getId())
@@ -99,6 +128,24 @@ public class ChapterServiceImpl implements ChapterService {
                         .id(chapterEntity.getId())
                         .name(chapterEntity.getName())
                         .comicName(comicName)
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<ChapterDto> getByComicId(Integer comicId) {
+        ComicsEntity comicsEntity = comicsRepository.findById(comicId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with id: %s", comicId)));
+
+        List<ChapterEntity> chapterEntities = chapterRepository.findAllByComicsEntity(comicsEntity)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapters with comic id: %s", comicsEntity.getId())));
+
+        return chapterEntities.stream()
+                .map(chapterEntity -> ChapterDto
+                        .builder()
+                        .id(chapterEntity.getId())
+                        .name(chapterEntity.getName())
+                        .comicName(comicsEntity.getName())
                         .build())
                 .toList();
     }

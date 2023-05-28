@@ -19,10 +19,16 @@ public class ChapterController {
 
     private final ChapterService chapterService;
 
-    @Operation(summary = "Saving chapter")
-    @PostMapping("/save")
-    public ResponseEntity<ChapterDto> save(@RequestBody ChapterSaveDto chapterSaveDto) {
-        return ResponseEntity.ok(chapterService.save(chapterSaveDto));
+    @Operation(summary = "Saving chapter by comic name")
+    @PostMapping("/save-by-name")
+    public ResponseEntity<ChapterDto> saveByComicName(@RequestBody ChapterSaveDto chapterSaveDto) {
+        return ResponseEntity.ok(chapterService.saveByComicName(chapterSaveDto));
+    }
+
+    @Operation(summary = "Saving chapter by comic id")
+    @PostMapping("/save-by-id")
+    public ResponseEntity<ChapterDto> saveByComicId(@RequestBody ChapterSaveDto chapterSaveDto) {
+        return ResponseEntity.ok(chapterService.saveByComicId(chapterSaveDto));
     }
 
     @Operation(summary = "Get all chapters")
@@ -31,10 +37,16 @@ public class ChapterController {
         return ResponseEntity.ok(chapterService.getAll());
     }
 
-    @Operation(summary = "Get chapters by comics name")
+    @Operation(summary = "Get chapters by comicsname")
     @GetMapping("/{comicName}")
     public ResponseEntity<List<ChapterDto>> getByComicName(@PathVariable String comicName) {
         return ResponseEntity.ok(chapterService.getByComicName(comicName));
+    }
+
+    @Operation(summary = "Get chapters by comic id")
+    @GetMapping("/{comicId}")
+    public ResponseEntity<List<ChapterDto>> getByComicName(@PathVariable Integer comicId) {
+        return ResponseEntity.ok(chapterService.getByComicId(comicId));
     }
 
     @Operation(summary = "Delete chapter by id")

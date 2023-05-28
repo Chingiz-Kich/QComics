@@ -1,9 +1,9 @@
 package kz.comics.account.service.impl;
 
-import kz.comics.account.repository.ComicsRepository;
+import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.LikeRepository;
 import kz.comics.account.repository.UserRepository;
-import kz.comics.account.repository.entities.ComicsEntity;
+import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.LikeEntity;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.service.LikeService;
@@ -20,20 +20,20 @@ import java.util.Optional;
 public class LikeServiceImpl implements LikeService {
 
     private final UserRepository userRepository;
-    private final ComicsRepository comicsRepository;
+    private final ChapterRepository chapterRepository;
     private final LikeRepository likeRepository;
 
     @Override
-    public Boolean saveLike(Integer userId, Integer comicsId) {
+    public Boolean saveLike(Integer userId, Integer chapterId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userId)));
 
-        ComicsEntity comicsEntity = comicsRepository.findById(comicsId)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comics with id: %s", comicsId)));
+        ChapterEntity chapterEntity = chapterRepository.findById(chapterId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with id: %s", chapterId)));
 
         LikeEntity likeEntity = LikeEntity
                 .builder()
-                .comics(comicsEntity)
+                .chapter(chapterEntity)
                 .user(userEntity)
                 .build();
 
@@ -42,14 +42,14 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public Boolean hasLike(Integer userId, Integer comicsId) {
+    public Boolean hasLike(Integer userId, Integer chapterId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userId)));
 
-        ComicsEntity comicsEntity = comicsRepository.findById(comicsId)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comics with id: %s", comicsId)));
+        ChapterEntity chapterEntity = chapterRepository.findById(chapterId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with id: %s", chapterId)));
 
-        Optional<LikeEntity> likeEntity = likeRepository.findByUserAndComics(userEntity, comicsEntity);
+        Optional<LikeEntity> likeEntity = likeRepository.findByUserAndChapter(userEntity, chapterEntity);
 
         return likeEntity.isPresent();
     }
