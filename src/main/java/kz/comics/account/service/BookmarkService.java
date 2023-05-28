@@ -1,6 +1,5 @@
 package kz.comics.account.service;
 
-import kz.comics.account.model.bookmark.BookmarkDto;
 import kz.comics.account.model.comics.ComicDto;
 
 import java.util.List;

@@ -20,4 +20,6 @@ public interface UserService {
     List<UserDto> getUserSubscriptions(String username);
     List<UserDto> getUserSubscribers(String username);
     String unsubscribe(String subscriberUsername, String userToUnsubscribeUsername);
+    int getSubscribersAmount(Integer userId);
+    int getSubscribersAmount(String username);
 }

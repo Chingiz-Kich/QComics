@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class BookmarkEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

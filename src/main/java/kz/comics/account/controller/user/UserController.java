@@ -112,4 +112,16 @@ public class UserController {
     public ResponseEntity<String> unsubscribeByUsername(@RequestParam String subscriberUsername, @RequestParam String userToUnsubscribeUsername) {
         return ResponseEntity.ok(userService.unsubscribe(subscriberUsername, userToUnsubscribeUsername));
     }
+
+    @Operation(summary = "Get subscribers number by id")
+    @GetMapping("/subscribers/amount/{id}")
+    public ResponseEntity<Integer> getSubscribersAmountById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.getSubscribersAmount(id));
+    }
+
+    @Operation(summary = "Get subscribers number by username")
+    @GetMapping("/subscribers/amount/{username}")
+    public ResponseEntity<Integer> getSubscribersAmountByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getSubscribersAmount(username));
+    }
 }

@@ -205,4 +205,22 @@ public class UserServiceImpl implements UserService {
         return "easy peasy lemon squeezy";
     }
 
+
+    @Override
+    public int getSubscribersAmount(Integer userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userId)));
+
+        List<UserEntity> subscribers = user.getSubscribers();
+        return subscribers.size();
+    }
+
+    @Override
+    public int getSubscribersAmount(String username) {
+        UserEntity user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
+
+        List<UserEntity> subscribers = user.getSubscribers();
+        return subscribers.size();
+    }
 }

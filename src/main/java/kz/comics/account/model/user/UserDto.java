@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     private Integer id;
     private String username;
-    private String password;
     private String email;
     private Role role;
+    private String avatarBase64;
 }

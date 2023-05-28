@@ -39,6 +39,10 @@ public class UserEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Lob
+    @Column(name = "avatar")
+    private byte[] avatar;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "comics_id", referencedColumnName = "id")
     private List<ComicsEntity> comics;
@@ -49,7 +53,7 @@ public class UserEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "comic_id")
     )
-    private List<ComicsEntity> bookmarks;
+    private List<BookmarkEntity> bookmarks;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

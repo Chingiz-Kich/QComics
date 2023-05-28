@@ -4,13 +4,15 @@ import kz.comics.account.model.user.UserDto;
 import kz.comics.account.repository.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+
 @Component
 public class UserMapper {
 
    public UserEntity toEntity(UserDto userDto) {
         return UserEntity.builder()
                 .username(userDto.getUsername())
-                .password(userDto.getPassword())
+                .avatar(Base64.getDecoder().decode(userDto.getAvatarBase64()))
                 .email(userDto.getEmail())
                 .role(userDto.getRole())
                 .build();
@@ -20,7 +22,7 @@ public class UserMapper {
        return UserDto.builder()
                .id(userEntity.getId())
                .username(userEntity.getUsername())
-               .password(userEntity.getPassword())
+               .avatarBase64(Base64.getEncoder().encodeToString(userEntity.getAvatar()))
                .email(userEntity.getEmail())
                .role(userEntity.getRole())
                .build();
