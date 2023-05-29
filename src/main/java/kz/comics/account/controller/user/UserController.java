@@ -23,23 +23,23 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "Get user by username")
-    @GetMapping("/{id}")
+    @GetMapping("/ids/{id}")
     public ResponseEntity<UserDto> getByUsername(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/usernames/{username}")
     public ResponseEntity<UserDto> getByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getByUsername(username));
     }
 
     @Operation(summary = "Delete user account by username")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/ids/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.deleteById(id));
     }
 
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/usernames/{username}")
     public ResponseEntity<String> deleteByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.deleteByUsername(username));
     }
@@ -78,25 +78,25 @@ public class UserController {
     }
 
     @Operation(summary = "Get user subscriptions by id")
-    @GetMapping("/subscriptions/{userId}")
+    @GetMapping("/subscriptions/ids/{userId}")
     public ResponseEntity<List<UserDto>> getUserSubscriptionsById(@PathVariable Integer userId) {
         return ResponseEntity.ok(userService.getUserSubscriptions(userId));
     }
 
     @Operation(summary = "Get user subscriptions by username")
-    @GetMapping("/subscriptions/{username}")
+    @GetMapping("/subscriptions/usernames/{username}")
     public ResponseEntity<List<UserDto>> getUserSubscriptionsByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserSubscriptions(username));
     }
 
     @Operation(summary = "Get user subscribers by id")
-    @GetMapping("/subscribers/{userId}")
+    @GetMapping("/subscribers/ids/{userId}")
     public ResponseEntity<List<UserDto>> getUserSubscribersById(@PathVariable Integer userId) {
         return ResponseEntity.ok(userService.getUserSubscribers(userId));
     }
 
     @Operation(summary = "Get user subscribers by username")
-    @GetMapping("/subscribers/{username}")
+    @GetMapping("/subscribers/usernames/{username}")
     public ResponseEntity<List<UserDto>> getUserSubscribersByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserSubscribers(username));
     }
@@ -114,13 +114,13 @@ public class UserController {
     }
 
     @Operation(summary = "Get subscribers number by id")
-    @GetMapping("/subscribers/amount/{id}")
+    @GetMapping("/subscribers/amount/ids/{id}")
     public ResponseEntity<Integer> getSubscribersAmountById(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.getSubscribersAmount(id));
     }
 
     @Operation(summary = "Get subscribers number by username")
-    @GetMapping("/subscribers/amount/{username}")
+    @GetMapping("/subscribers/amount/usernames/{username}")
     public ResponseEntity<Integer> getSubscribersAmountByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getSubscribersAmount(username));
     }

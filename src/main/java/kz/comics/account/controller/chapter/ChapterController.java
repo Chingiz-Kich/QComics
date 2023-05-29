@@ -38,14 +38,14 @@ public class ChapterController {
     }
 
     @Operation(summary = "Get chapters by comicsname")
-    @GetMapping("/{comicName}")
+    @GetMapping("/comic-names/{comicName}")
     public ResponseEntity<List<ChapterDto>> getByComicName(@PathVariable String comicName) {
         return ResponseEntity.ok(chapterService.getByComicName(comicName));
     }
 
     @Operation(summary = "Get chapters by comic id")
-    @GetMapping("/{comicId}")
-    public ResponseEntity<List<ChapterDto>> getByComicName(@PathVariable Integer comicId) {
+    @GetMapping("/comic-ids/{comicId}")
+    public ResponseEntity<List<ChapterDto>> getByComicId(@PathVariable Integer comicId) {
         return ResponseEntity.ok(chapterService.getByComicId(comicId));
     }
 

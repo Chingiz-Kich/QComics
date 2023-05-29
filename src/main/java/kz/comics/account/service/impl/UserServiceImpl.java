@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -75,6 +76,10 @@ public class UserServiceImpl implements UserService {
 
         if (updatedUser.getRole() != null) {
             userEntity.setRole(updatedUser.getRole());
+        }
+
+        if (StringUtils.isNotBlank(updatedUser.getAvatarBase64())) {
+            userEntity.setAvatar(Base64.getDecoder().decode(updatedUser.getAvatarBase64()));
         }
 
         UserEntity userEntitySaved = userRepository.save(userEntity);
