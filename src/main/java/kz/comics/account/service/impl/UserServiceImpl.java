@@ -3,9 +3,11 @@ package kz.comics.account.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.UserMapper;
 import kz.comics.account.model.user.UserDto;
+//import kz.comics.account.repository.UserSubscriptionRepository;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.user.UserUpdateRequest;
 import kz.comics.account.repository.UserRepository;
+//import kz.comics.account.repository.entities.UserSubscriptionEntity;
 import kz.comics.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final UserMapper userMapper;
+    //private final UserSubscriptionRepository userSubscriptionRepository;
 
     @Override
     @SneakyThrows
@@ -101,7 +104,15 @@ public class UserServiceImpl implements UserService {
         UserEntity userToSubscribe = userRepository.findById(userToSubscribeId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userToSubscribeId)));
 
+/*        UserSubscriptionEntity userSubscriptionEntity = UserSubscriptionEntity
+                .builder()
+                .subscriber(subscriber)
+                .userToSubscribe(userToSubscribe)
+                .build();*/
+
         subscriber.getSubscriptions().add(userToSubscribe);
+
+        // userSubscriptionRepository.save(userSubscriptionEntity);
         userRepository.save(subscriber);
         return "Subscribed";
     }
@@ -110,6 +121,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getUserSubscriptions(Integer userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userId)));
+        //List<UserEntity> subscriptions = userSubscriptionRepository.findByUserToSubscribe(user);
         List<UserEntity> subscriptions =  user.getSubscriptions();
         return subscriptions.stream()
                 .map(userMapper::toDto)
@@ -148,14 +160,21 @@ public class UserServiceImpl implements UserService {
         UserEntity userToSubscribe = userRepository.findUserByUsername(userToSubscribeUsername)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", userToSubscribeUsername)));
 
+/*        UserSubscriptionEntity userSubscriptionEntity = UserSubscriptionEntity
+                .builder()
+                .subscriber(subscriber)
+                .userToSubscribe(userToSubscribe)
+                .build();*/
         subscriber.getSubscriptions().add(userToSubscribe);
         userRepository.save(subscriber);
+        //userSubscriptionRepository.save(userSubscriptionEntity);
         return "Subscribed";
     }
 
     @Override
     public List<UserDto> getUserSubscriptions(String username) {
         UserEntity user = userRepository.findUserByUsername(username)
+        //UserEntity user = userSubscriptionRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
         List<UserEntity> subscriptions =  user.getSubscriptions();
         return subscriptions.stream()

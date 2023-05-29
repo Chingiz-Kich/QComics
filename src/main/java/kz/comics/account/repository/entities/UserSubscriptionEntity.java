@@ -1,3 +1,4 @@
+/*
 package kz.comics.account.repository.entities;
 
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_subscriptions")
-public class UserSubscription {
+public class UserSubscriptionEntity {
 
     @Id
     @GeneratedValue
@@ -24,5 +25,6 @@ public class UserSubscription {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UserEntity userToSubscribe;
 }
+*/
