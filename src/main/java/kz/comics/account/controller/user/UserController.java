@@ -22,23 +22,25 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Get user by username")
+    @Operation(summary = "Get user by id")
     @GetMapping("/ids/{id}")
     public ResponseEntity<UserDto> getByUsername(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
+    @Operation(summary = "Get user by username")
     @GetMapping("/usernames/{username}")
     public ResponseEntity<UserDto> getByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getByUsername(username));
     }
 
-    @Operation(summary = "Delete user account by username")
+    @Operation(summary = "Delete user account by шв")
     @DeleteMapping("/ids/{id}")
     public ResponseEntity<String> deleteById(@PathVariable Integer id) {
         return ResponseEntity.ok(userService.deleteById(id));
     }
 
+    @Operation(summary = "Delete user account by username")
     @DeleteMapping("/usernames/{username}")
     public ResponseEntity<String> deleteByUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.deleteByUsername(username));

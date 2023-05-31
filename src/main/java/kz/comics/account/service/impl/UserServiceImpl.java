@@ -57,17 +57,28 @@ public class UserServiceImpl implements UserService {
     public UserDto update(UserUpdateRequest updatedUser) {
         log.info("In UserService. updatedUser: {}", objectMapper.writeValueAsString(updatedUser));
 
-        Optional<UserEntity> optionalUser = userRepository.findUserByUsername(Optional.ofNullable(updatedUser.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("In user update null found")));
+        Optional<UserEntity> optionalUser;
+        optionalUser = userRepository.findById(Optional.ofNullable(updatedUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Id is null in UserUpdateRequest")));
+
+
+        if (optionalUser.isEmpty()){
+            optionalUser = userRepository.findUserByUsername(Optional.ofNullable(updatedUser.getUsername())
+                    .filter(StringUtils::isNotBlank)
+                    .orElseThrow(() -> new IllegalArgumentException("Username is empty or null in UserUpdateRequest")));
+        }
 
         if (optionalUser.isEmpty()) {
             throw new NoSuchElementException("User not found");
         }
 
-
         UserEntity userEntity = UserEntity.builder()
                 .username(updatedUser.getUsername())
                 .build();
+
+        if (StringUtils.isNotBlank(updatedUser.getUsername())) {
+            userEntity.setUsername(updatedUser.getUsername());
+        }
 
         if (StringUtils.isNotBlank(updatedUser.getPassword())) {
             userEntity.setPassword(updatedUser.getPassword());
