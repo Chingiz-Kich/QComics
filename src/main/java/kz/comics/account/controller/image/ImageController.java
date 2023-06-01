@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+
+@CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/images")
 @RequiredArgsConstructor
