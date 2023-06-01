@@ -1,11 +1,7 @@
 package kz.comics.account.service.impl;
 
-import kz.comics.account.repository.ChapterRepository;
-import kz.comics.account.repository.LikeRepository;
-import kz.comics.account.repository.UserRepository;
-import kz.comics.account.repository.entities.ChapterEntity;
-import kz.comics.account.repository.entities.LikeEntity;
-import kz.comics.account.repository.entities.UserEntity;
+import kz.comics.account.repository.*;
+import kz.comics.account.repository.entities.*;
 import kz.comics.account.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +18,8 @@ public class LikeServiceImpl implements LikeService {
     private final UserRepository userRepository;
     private final ChapterRepository chapterRepository;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Override
     public Boolean saveLike(Integer userId, Integer chapterId) {
@@ -52,5 +50,28 @@ public class LikeServiceImpl implements LikeService {
         Optional<LikeEntity> likeEntity = likeRepository.findByUserAndChapter(userEntity, chapterEntity);
 
         return likeEntity.isPresent();
+    }
+
+    @Override
+    public Boolean saveCommentLike(Integer userId, Integer commentId) {
+        CommentEntity commentEntity = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("ni"));
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("poxui"));
+
+        commentLikeRepository.save(CommentLikeEntity.builder().commentEntity(commentEntity).userEntity(userEntity).build());
+        return true;
+    }
+
+    @Override
+    public Boolean hasCommentLike(Integer userId, Integer commentId) {
+        CommentEntity commentEntity = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("ni"));
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("poxui"));
+
+        return commentLikeRepository.findByCommentEntityAndUserEntity(commentEntity, userEntity).isPresent();
     }
 }

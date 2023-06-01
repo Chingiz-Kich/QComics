@@ -22,8 +22,8 @@ public class CommentEntity {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comic_id", referencedColumnName = "id")
-    private ComicsEntity comicsEntity;
+    @JoinColumn(name = "chapter_id", referencedColumnName = "id")
+    private ChapterEntity chapterEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

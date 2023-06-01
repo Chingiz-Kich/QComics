@@ -1,6 +1,7 @@
 package kz.comics.account.controller.like;
 
 import io.swagger.v3.oas.annotations.Operation;
+import kz.comics.account.model.like.CommentLikeSave;
 import kz.comics.account.model.like.LikeSaveDto;
 import kz.comics.account.service.LikeService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,22 @@ public class LikeController {
     @Operation(summary = "Save like")
     @PostMapping("/save")
     public ResponseEntity<Boolean> save(@RequestBody LikeSaveDto likeSaveDto) {
-        return ResponseEntity.ok(likeService.saveLike(likeSaveDto.getUserId(), likeSaveDto.getComicId()));
+        return ResponseEntity.ok(likeService.saveLike(likeSaveDto.getUserId(), likeSaveDto.getChapterId()));
     }
 
     @Operation(summary = "Check if specific comic has like from particular user")
-    @GetMapping("/{userId}/{comicId}")
-    public ResponseEntity<Boolean> hasLike(@PathVariable Integer userId, @PathVariable Integer comicId) {
-        return ResponseEntity.ok(likeService.hasLike(userId, comicId));
+    @GetMapping("/{userId}/{chapterId}")
+    public ResponseEntity<Boolean> hasLike(@PathVariable Integer userId, @PathVariable Integer chapterId) {
+        return ResponseEntity.ok(likeService.hasLike(userId, chapterId));
+    }
+
+    @PostMapping("/comment/save")
+    public ResponseEntity<Boolean> saveCommentLike(@RequestBody CommentLikeSave commentLikeSave) {
+        return ResponseEntity.ok(likeService.saveCommentLike(commentLikeSave.getUserId(), commentLikeSave.getCommentId()));
+    }
+
+    @GetMapping("/comment/{commentId}/{userId}")
+    public ResponseEntity<Boolean> hasCommentLike(@PathVariable Integer commentId, @PathVariable Integer userId) {
+        return ResponseEntity.ok(likeService.hasCommentLike(userId, commentId));
     }
 }

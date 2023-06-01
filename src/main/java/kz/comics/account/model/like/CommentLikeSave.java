@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeSaveDto {
+public class CommentLikeSave {
 
+    private Integer commentId;
     private Integer userId;
-    private Integer chapterId;
 }
