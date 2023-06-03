@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.comics.account.mapper.UserMapper;
 import kz.comics.account.model.user.UserDto;
 //import kz.comics.account.repository.UserSubscriptionRepository;
+import kz.comics.account.model.user.UserUpdateById;
+import kz.comics.account.model.user.UserUpdateByUsername;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.model.user.UserUpdateRequest;
 import kz.comics.account.repository.UserRepository;
@@ -12,6 +14,7 @@ import kz.comics.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,34 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userEntity);
     }
 
+    @SneakyThrows
+    @Override
+    public UserDto updateById(UserUpdateById userUpdateById) {
+        log.info("In UserService. updatedUser: {}", objectMapper.writeValueAsString(userUpdateById));
+
+        UserEntity userEntity = userRepository.findById(userUpdateById.getId())
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with id: %s", userUpdateById.getId())));
+
+        UserEntity updatedEntity = this.getUpdatedUserEntity(userEntity, userUpdateById);
+        UserEntity savedEntity = userRepository.save(updatedEntity);
+        log.info("In updateById. Update user from repository: {}", objectMapper.writeValueAsString(savedEntity));
+        return userMapper.toDto(userEntity);
+    }
+
+    @SneakyThrows
+    @Override
+    public UserDto updateByUsername(UserUpdateByUsername userUpdateByUsername) {
+        log.info("In UserService. updatedUser: {}", objectMapper.writeValueAsString(userUpdateByUsername));
+
+        UserEntity userEntity = userRepository.findUserByUsername(userUpdateByUsername.getUsername())
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", userUpdateByUsername.getUsername())));
+
+        UserEntity updatedEntity = this.getUpdatedUserEntity(userEntity, userUpdateByUsername);
+        UserEntity savedEntity = userRepository.save(updatedEntity);
+        log.info("In updateByUsername. Update user from repository: {}", objectMapper.writeValueAsString(savedEntity));
+        return userMapper.toDto(savedEntity);
+    }
+
     @Override
     @SneakyThrows
     public String deleteById(Integer id)  {
@@ -51,56 +82,6 @@ public class UserServiceImpl implements UserService {
 
         return "User deleted";
     }
-
-    @Override
-    @SneakyThrows
-    public UserDto update(UserUpdateRequest updatedUser) {
-        log.info("In UserService. updatedUser: {}", objectMapper.writeValueAsString(updatedUser));
-
-        Optional<UserEntity> optionalUser;
-        optionalUser = userRepository.findById(Optional.ofNullable(updatedUser.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Id is null in UserUpdateRequest")));
-
-
-        if (optionalUser.isEmpty()){
-            optionalUser = userRepository.findUserByUsername(Optional.ofNullable(updatedUser.getUsername())
-                    .filter(StringUtils::isNotBlank)
-                    .orElseThrow(() -> new IllegalArgumentException("Username is empty or null in UserUpdateRequest")));
-        }
-
-        if (optionalUser.isEmpty()) {
-            throw new NoSuchElementException("User not found");
-        }
-
-        UserEntity userEntity = UserEntity.builder()
-                .username(updatedUser.getUsername())
-                .build();
-
-        if (StringUtils.isNotBlank(updatedUser.getUsername())) {
-            userEntity.setUsername(updatedUser.getUsername());
-        }
-
-        if (StringUtils.isNotBlank(updatedUser.getPassword())) {
-            userEntity.setPassword(updatedUser.getPassword());
-        }
-
-        if (StringUtils.isNotBlank(updatedUser.getEmail())) {
-            userEntity.setEmail(updatedUser.getEmail());
-        }
-
-        if (updatedUser.getRole() != null) {
-            userEntity.setRole(updatedUser.getRole());
-        }
-
-        if (StringUtils.isNotBlank(updatedUser.getAvatarBase64())) {
-            userEntity.setAvatar(Base64.getDecoder().decode(updatedUser.getAvatarBase64()));
-        }
-
-        UserEntity userEntitySaved = userRepository.save(userEntity);
-        log.info("In UserService. Update user from repository: {}", objectMapper.writeValueAsString(userEntitySaved));
-        return userMapper.toDto(userEntitySaved);
-    }
-
 
     public String deleteAll() {
         userRepository.deleteAll();
@@ -240,7 +221,6 @@ public class UserServiceImpl implements UserService {
         return "easy peasy lemon squeezy";
     }
 
-
     @Override
     public int getSubscribersAmount(Integer userId) {
         UserEntity user = userRepository.findById(userId)
@@ -257,5 +237,26 @@ public class UserServiceImpl implements UserService {
 
         List<UserEntity> subscribers = user.getSubscribers();
         return subscribers.size();
+    }
+
+    private UserEntity getUpdatedUserEntity(UserEntity userEntity, UserUpdateRequest updateRequest) {
+
+        if (StringUtils.isNotBlank(updateRequest.getPassword())) {
+            userEntity.setPassword(updateRequest.getPassword());
+        }
+
+        if (StringUtils.isNotBlank(updateRequest.getEmail())) {
+            userEntity.setEmail(updateRequest.getEmail());
+        }
+
+        if (updateRequest.getRole() != null) {
+            userEntity.setRole(updateRequest.getRole());
+        }
+
+        if (StringUtils.isNotBlank(updateRequest.getAvatarBase64())) {
+            userEntity.setAvatar(Base64.getDecoder().decode(updateRequest.getAvatarBase64()));
+        }
+
+        return userEntity;
     }
 }

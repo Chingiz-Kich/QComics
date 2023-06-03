@@ -1,7 +1,8 @@
 package kz.comics.account.service;
 
 import kz.comics.account.model.user.UserDto;
-import kz.comics.account.model.user.UserUpdateRequest;
+import kz.comics.account.model.user.UserUpdateById;
+import kz.comics.account.model.user.UserUpdateByUsername;
 
 import java.util.List;
 
@@ -9,7 +10,8 @@ public interface UserService {
     UserDto getById(Integer id);
     UserDto getByUsername(String username);
     String deleteByUsername(String username);
-    UserDto update(UserUpdateRequest userUpdateRequest);
+    UserDto updateById(UserUpdateById userUpdateById);
+    UserDto updateByUsername(UserUpdateByUsername userUpdateByUsername);
     String deleteById(Integer id);
     String deleteAll();
     String subscribe(Integer subscriberId, Integer userToSubscribeId);

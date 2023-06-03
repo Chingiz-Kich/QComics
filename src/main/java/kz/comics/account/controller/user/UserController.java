@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kz.comics.account.model.user.UserDto;
-import kz.comics.account.model.user.UserUpdateRequest;
+import kz.comics.account.model.user.UserUpdateById;
+import kz.comics.account.model.user.UserUpdateByUsername;
 import kz.comics.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class UserController {
         return ResponseEntity.ok(userService.deleteByUsername(username));
     }
 
-    @Operation(summary = "Update user (We have to separate upd for password change and other stuff. This is just quick fix)")
+    @Operation(summary = "Update user by username")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "500", description = "In user update null found",
                     content = @Content(mediaType = "application/json",
@@ -56,9 +57,14 @@ public class UserController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = UsernameNotFoundException.class)))
     })
-    @PostMapping(path = "/update")
-    public ResponseEntity<UserDto> update(@RequestBody UserUpdateRequest updatedUser) {
-        return ResponseEntity.ok(userService.update(updatedUser));
+    @PostMapping(path = "/update-by-username")
+    public ResponseEntity<UserDto> updateByUsername(@RequestBody UserUpdateByUsername updatedUser) {
+        return ResponseEntity.ok(userService.updateByUsername(updatedUser));
+    }
+
+    @PostMapping(path = "/update-by-id")
+    public ResponseEntity<UserDto> updateById(@RequestBody UserUpdateById updatedUser) {
+        return ResponseEntity.ok(userService.updateById(updatedUser));
     }
 
     @Operation(summary = "Destroy users")
