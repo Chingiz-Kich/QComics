@@ -43,11 +43,22 @@ public class UserEntity implements UserDetails {
     @Column(name = "avatar")
     private byte[] avatar;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    /**
+     *  @OneToMany(cascade = CascadeType.ALL)
+     *
+     *  The cascade = CascadeType.ALL option means that any operations performed on the UserEntity (such as saving or updating) will cascade to the associated ComicsEntity instances.
+     *  This includes generating new IDs for the ComicsEntity instances when they are added to the comics collection.
+     *
+     *  By removing the cascade = CascadeType.ALL, you retain control over the IDs of the ComicsEntity instances when associating them with a UserEntity.
+     *  You'll need to ensure that the ComicsEntity instances have valid IDs assigned before adding them to the UserEntity and saving the BookmarkEntity.
+     *
+     * Additionally, make sure that the id field of ComicsEntity is properly annotated with @GeneratedValue to ensure automatic ID generation when persisting new ComicsEntity instances.
+     */
+    @OneToMany
     @JoinColumn(name = "comics_id", referencedColumnName = "id")
     private List<ComicsEntity> comics;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "user_bookmarks",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -55,7 +66,7 @@ public class UserEntity implements UserDetails {
     )
     private List<BookmarkEntity> bookmarks;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = @JoinColumn(name = "subscriber_id"),
