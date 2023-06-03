@@ -239,12 +239,12 @@ public class ComicServiceImpl implements ComicService {
 
     // FIXME: This shit should be in ComicsMapper !!!!
     public ComicDto entityToDto(ComicsEntity comicsEntity) {
-        return ComicDto
+        ComicDto comicDto = ComicDto
                 .builder()
                 .name(comicsEntity.getName())
                 .author(comicsEntity.getAuthor())
                 .genres(comicsEntity.getGenres().stream().toList())
-                .imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
+                //.imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
                 .rating(comicsEntity.getRating())
                 .votes(comicsEntity.getVotes())
                 .description(comicsEntity.getDescription())
@@ -252,16 +252,22 @@ public class ComicServiceImpl implements ComicService {
                 .publishedDate(comicsEntity.getPublishedDate())
                 .isUpdated(comicsEntity.getIsUpdated())
                 .build();
+
+        if (comicsEntity.getCoverImage() != null) {
+            comicDto.setImageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()));
+        }
+
+        return comicDto;
     }
 
     // FIXME: This shit should be in ComicsMapper !!!!
     public ComicsEntity dtoToEntity(ComicDto comicDto) {
-        return ComicsEntity
+        ComicsEntity comicsEntity = ComicsEntity
                 .builder()
                 .name(comicDto.getName())
                 .author(comicDto.getAuthor())
                 .genres(new LinkedHashSet<>(comicDto.getGenres()))
-                .coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
+                //.coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
                 .rating(comicDto.getRating())
                 .votes(comicDto.getVotes())
                 .description(comicDto.getDescription())
@@ -269,5 +275,11 @@ public class ComicServiceImpl implements ComicService {
                 .publishedDate(comicDto.getPublishedDate())
                 .isUpdated(false)
                 .build();
+
+        if (StringUtils.isNotBlank(comicDto.getImageCoverBase64())) {
+            comicsEntity.setCoverImage(Base64.getDecoder().decode(comicDto.getImageCoverBase64()));
+        }
+
+        return comicsEntity;
     }
 }
