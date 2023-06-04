@@ -62,7 +62,7 @@ public class RateServiceImpl implements RateService {
 
     @Override
     @Transactional
-    public Double getRate(String comicName, String username) {
+    public double getRate(String comicName, String username) {
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 

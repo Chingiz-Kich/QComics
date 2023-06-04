@@ -104,7 +104,7 @@ public class ComicServiceImpl implements ComicService {
             comicsEntity.setDescription(comicDto.getDescription());
         }
 
-        if (comicDto.getRating() != null) {
+        if (comicDto.getRating() != 0) {
             comicsEntity.setRating(comicDto.getRating());
         }
 

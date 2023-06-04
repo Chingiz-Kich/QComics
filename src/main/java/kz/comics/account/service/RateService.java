@@ -4,7 +4,7 @@ import kz.comics.account.model.rate.RateDto;
 
 public interface RateService {
     RateDto saveRate(String comicName, String username, double rating);
-    Double getRate(String comicName, String username);
+    double getRate(String comicName, String username);
     RateDto updateRate(String comicName, String username, double rating);
     String deleteRate(String comicName, String username);
 }

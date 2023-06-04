@@ -27,5 +27,5 @@ public class RateEntity {
     private ComicsEntity comics;
 
     @Column(name = "rating")
-    private Double rating;
+    private double rating;
 }

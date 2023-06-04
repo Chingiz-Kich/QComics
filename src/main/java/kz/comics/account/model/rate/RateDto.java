@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class RateDto {
     private String comicName;
     private String username;
-    private Double rating;
+    private double rating;
 }

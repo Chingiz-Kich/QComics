@@ -42,10 +42,10 @@ public class ComicsEntity {
     private byte[] coverImage;
 
     @Column(name = "rating")
-    private Double rating;
+    private double rating;
 
     @Column(name = "votes")
-    private Double votes;
+    private double votes;
 
     @Lob
     @Column(name = "description")
