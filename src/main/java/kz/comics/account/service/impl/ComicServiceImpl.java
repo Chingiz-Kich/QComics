@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +26,7 @@ import java.util.*;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ComicServiceImpl implements ComicService {
 
@@ -59,7 +59,6 @@ public class ComicServiceImpl implements ComicService {
 
     @Override
     @SneakyThrows
-    @Transactional
     public ComicDto getComic(String comicName) {
         log.info("Get comics name: {}", comicName);
 
@@ -80,7 +79,6 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    @Transactional
     public ComicDto updateComic(ComicDto comicDto) {
 
         Optional<ComicsEntity> comicsEntityOptional = comicsRepository.getComicsEntitiesByName(comicDto.getName());
@@ -130,7 +128,6 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    @Transactional
     public ComicDto delete(String name) {
         comicsRepository.deleteByName(name)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot delete comic with name: %s", name)));
@@ -221,7 +218,6 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    @Transactional
     public void updateRating(String comicName, double rate) {
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
