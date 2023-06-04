@@ -41,9 +41,9 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("ec2-54-220-22-253.eu-west-1.compute.amazonaws.com");
-        configuration.setPort(16690);
-        configuration.setPassword("p8310e61f5eb6de4e2f3b60b7aad0a4c022562577dcee05baf8b3b6712cbac24c");
+        configuration.setHostName(hostName);
+        configuration.setPort(port);
+        configuration.setPassword(password);
         return new JedisConnectionFactory(configuration);
     }
 
@@ -92,9 +92,9 @@ public class RedisConfig {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisUrl);
-        redisConfig.setPassword("p8310e61f5eb6de4e2f3b60b7aad0a4c022562577dcee05baf8b3b6712cbac24c");
-        redisConfig.setHostName("ec2-54-220-22-253.eu-west-1.compute.amazonaws.com");
-        redisConfig.setPort(16690);
+        redisConfig.setPassword(password);
+        redisConfig.setHostName(hostName);
+        redisConfig.setPort(port);
         return new LettuceConnectionFactory(redisConfig);
     }
 
