@@ -2,10 +2,10 @@ package kz.comics.account.service.impl;
 
 import kz.comics.account.model.chapter.*;
 import kz.comics.account.repository.ChapterRepository;
+import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.service.ChapterService;
-import kz.comics.account.service.ComicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 public class ChapterServiceImpl implements ChapterService {
 
     private final ChapterRepository chapterRepository;
-    private final ComicService comicService;
+    private final ComicsRepository comicsRepository;
 
     @Override
     @Transactional
@@ -32,7 +32,8 @@ public class ChapterServiceImpl implements ChapterService {
             throw new IllegalStateException(String.format("Chapter with name: %s already exist!", chapterSaveDto.getName()));
         }
 
-        ComicsEntity comicsEntity = comicService.getByName(chapterSaveDto.getComicName());
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(chapterSaveDto.getComicName())
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
 
         ChapterEntity chapterEntity = ChapterEntity
                 .builder()
@@ -59,7 +60,8 @@ public class ChapterServiceImpl implements ChapterService {
             throw new IllegalStateException(String.format("Chapter with name: %s already exist!", chapterSaveDto.getName()));
         }
 
-        ComicsEntity comicsEntity = comicService.getById(chapterSaveDto.getComicId());
+        ComicsEntity comicsEntity = comicsRepository.findById(chapterSaveDto.getComicId())
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with id: %s", chapterSaveDto.getComicId())));
 
         ChapterEntity chapterEntity = ChapterEntity
                 .builder()
@@ -112,7 +114,8 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     @Transactional
     public List<ChapterDto> getByComicName(String comicName) {
-        ComicsEntity comicsEntity = comicService.getByName(comicName);
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         List<ChapterEntity> chapterEntities = chapterRepository.findAllByComicsEntity(comicsEntity)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapters with comic id: %s", comicsEntity.getId())));
@@ -129,7 +132,8 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public List<ChapterDto> getByComicId(Integer comicId) {
-        ComicsEntity comicsEntity = comicService.getById(comicId);
+        ComicsEntity comicsEntity = comicsRepository.findById(comicId)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with id: %s", comicId)));
 
         List<ChapterEntity> chapterEntities = chapterRepository.findAllByComicsEntity(comicsEntity)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapters with comic id: %s", comicsEntity.getId())));
