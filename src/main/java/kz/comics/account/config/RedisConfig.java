@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,8 @@ import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -42,15 +45,30 @@ public class RedisConfig {
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(hostName);
-        configuration.setPort(port);
+        configuration.setPort(16690);
         configuration.setPassword(password);
         return new JedisConnectionFactory(configuration);
     }
 
     @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(hostName, 16690);
+        redisConfig.setPassword(password);
+
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        // Set additional Jedis pool configuration properties if needed
+
+        JedisClientConfiguration clientConfig = JedisClientConfiguration.builder()
+                .usePooling().poolConfig(poolConfig)
+                .build();
+
+        return new JedisConnectionFactory(redisConfig, clientConfig);
+    }
+
+    @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory());
+        template.setConnectionFactory(connectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new JdkSerializationRedisSerializer());
@@ -60,14 +78,14 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean
+/*    @Bean
     public LettuceClientConfigurationBuilderCustomizer lettuceClientConfigurationBuilderCustomizer() {
         return clientConfigurationBuilder -> {
             if (clientConfigurationBuilder.build().isUseSsl()) {
                 clientConfigurationBuilder.useSsl().disablePeerVerification();
             }
         };
-    }
+    }*/
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
@@ -94,7 +112,7 @@ public class RedisConfig {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisUrl);
         redisConfig.setPassword(password);
         redisConfig.setHostName(hostName);
-        redisConfig.setPort(port);
+        redisConfig.setPort(16690);
         return new LettuceConnectionFactory(redisConfig);
     }
 
@@ -118,6 +136,47 @@ public class RedisConfig {
             HostnameVerifier bogusHostnameVerifier = (hostname, session) -> true;
 
             return new Jedis(URI.create(System.getenv("REDIS_URL")),
+                    sslContext.getSocketFactory(),
+                    sslContext.getDefaultSSLParameters(),
+                    bogusHostnameVerifier);
+
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new RuntimeException("Cannot obtain Redis connection!", e);
+        }
+    }
+
+    // The assumption with this method is that it's been called when the application
+// is booting up so that a static pool has been created for all threads to use.
+// e.g. pool = getPool()
+    public static JedisPool getPool() {
+        try {
+            TrustManager bogusTrustManager = new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            };
+
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, new TrustManager[]{bogusTrustManager}, new java.security.SecureRandom());
+
+            HostnameVerifier bogusHostnameVerifier = (hostname, session) -> true;
+
+            JedisPoolConfig poolConfig = new JedisPoolConfig();
+            poolConfig.setMaxTotal(10);
+            poolConfig.setMaxIdle(5);
+            poolConfig.setMinIdle(1);
+            poolConfig.setTestOnBorrow(true);
+            poolConfig.setTestOnReturn(true);
+            poolConfig.setTestWhileIdle(true);
+
+            return new JedisPool(poolConfig,
+                    URI.create(System.getenv("REDIS_URL")),
                     sslContext.getSocketFactory(),
                     sslContext.getDefaultSSLParameters(),
                     bogusHostnameVerifier);
