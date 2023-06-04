@@ -1,9 +1,7 @@
 package kz.comics.account.controller.chapter;
 
 import io.swagger.v3.oas.annotations.Operation;
-import kz.comics.account.model.chapter.ChapterDto;
-import kz.comics.account.model.chapter.ChapterSaveDto;
-import kz.comics.account.model.chapter.ChapterUpdate;
+import kz.comics.account.model.chapter.*;
 import kz.comics.account.service.ChapterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +19,13 @@ public class ChapterController {
 
     @Operation(summary = "Saving chapter by comic name")
     @PostMapping("/save-by-name")
-    public ResponseEntity<ChapterDto> saveByComicName(@RequestBody ChapterSaveDto chapterSaveDto) {
+    public ResponseEntity<ChapterDto> saveByComicName(@RequestBody ChapterSaveByCName chapterSaveDto) {
         return ResponseEntity.ok(chapterService.saveByComicName(chapterSaveDto));
     }
 
     @Operation(summary = "Saving chapter by comic id")
     @PostMapping("/save-by-id")
-    public ResponseEntity<ChapterDto> saveByComicId(@RequestBody ChapterSaveDto chapterSaveDto) {
+    public ResponseEntity<ChapterDto> saveByComicId(@RequestBody ChapterSaveByCId chapterSaveDto) {
         return ResponseEntity.ok(chapterService.saveByComicId(chapterSaveDto));
     }
 

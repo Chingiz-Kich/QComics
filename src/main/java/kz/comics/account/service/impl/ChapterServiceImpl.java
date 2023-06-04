@@ -1,8 +1,6 @@
 package kz.comics.account.service.impl;
 
-import kz.comics.account.model.chapter.ChapterDto;
-import kz.comics.account.model.chapter.ChapterSaveDto;
-import kz.comics.account.model.chapter.ChapterUpdate;
+import kz.comics.account.model.chapter.*;
 import kz.comics.account.repository.ChapterRepository;
 import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
@@ -27,7 +25,7 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     @Transactional
-    public ChapterDto saveByComicName(ChapterSaveDto chapterSaveDto) {
+    public ChapterDto saveByComicName(ChapterSaveByCName chapterSaveDto) {
         log.info("Saving ChapterSaveDto name: {}", chapterSaveDto.getName());
 
         if (chapterRepository.getByName(chapterSaveDto.getName()).isPresent()) {
@@ -55,7 +53,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public ChapterDto saveByComicId(ChapterSaveDto chapterSaveDto) {
+    public ChapterDto saveByComicId(ChapterSaveByCId chapterSaveDto) {
         log.info("Saving ChapterSaveDto comic id: {}", chapterSaveDto.getComicId());
 
         if (chapterRepository.findById(chapterSaveDto.getComicId()).isPresent()) {
@@ -63,7 +61,7 @@ public class ChapterServiceImpl implements ChapterService {
         }
 
         ComicsEntity comicsEntity = comicsRepository.findById(chapterSaveDto.getComicId())
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", chapterSaveDto.getComicName())));
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with id: %s", chapterSaveDto.getComicId())));
 
         ChapterEntity chapterEntity = ChapterEntity
                 .builder()

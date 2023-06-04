@@ -4,7 +4,5 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserUpdateByUsername extends UserUpdateRequest{
 }
