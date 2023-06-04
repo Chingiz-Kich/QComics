@@ -4,11 +4,11 @@ import kz.comics.account.mapper.ImageMapper;
 import kz.comics.account.model.comics.ImageDto;
 import kz.comics.account.model.comics.ImageSaveDto;
 import kz.comics.account.repository.ChapterRepository;
+import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.ImageRepository;
 import kz.comics.account.repository.entities.ChapterEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.entities.ImageEntity;
-import kz.comics.account.service.ComicService;
 import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +26,8 @@ public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
     private final ChapterRepository chapterRepository;
+    private final ComicsRepository comicsRepository;
     private final ImageMapper imageMapper;
-    private final ComicService comicService;
 
     @Override
     public ImageDto save(ImageSaveDto imageSaveDto) {
@@ -61,7 +61,8 @@ public class ImageServiceImpl implements ImageService {
         ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
 
-        ComicsEntity comicsEntity = comicService.getByName(comicName);
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         return imageRepository.getAllByChapterEntityAndComicsEntity(chapterEntity, comicsEntity);
     }
@@ -82,7 +83,8 @@ public class ImageServiceImpl implements ImageService {
         ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
 
-        ComicsEntity comicsEntity = comicService.getByName(comicName);
+        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
 
         List<ImageEntity> imageEntityList = imageRepository.getAllByChapterEntityAndComicsEntity(chapterEntity, comicsEntity);
 
