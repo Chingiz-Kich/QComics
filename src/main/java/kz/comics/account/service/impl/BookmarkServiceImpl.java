@@ -1,13 +1,14 @@
 package kz.comics.account.service.impl;
 
+import kz.comics.account.mapper.ComicsMapper;
 import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.repository.BookmarkRepository;
-import kz.comics.account.repository.ComicsRepository;
 import kz.comics.account.repository.UserRepository;
 import kz.comics.account.repository.entities.BookmarkEntity;
 import kz.comics.account.repository.entities.ComicsEntity;
 import kz.comics.account.repository.entities.UserEntity;
 import kz.comics.account.service.BookmarkService;
+import kz.comics.account.service.ComicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,13 @@ import java.util.NoSuchElementException;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final UserRepository userRepository;
-    private final ComicsRepository comicsRepository;
-    private final ComicServiceImpl comicServiceImpl;
     private final BookmarkRepository bookmarkRepository;
+    private final ComicService comicService;
+    private final ComicsMapper comicsMapper;
 
     @Override
     public String addComicToBookmarks(String comicName, String username) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+        ComicsEntity comicsEntity = comicService.getByName(comicName);
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
@@ -53,8 +53,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public String removeComicFromBookmark(String comicName, String username) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+        ComicsEntity comicsEntity = comicService.getByName(comicName);
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));
@@ -82,14 +81,13 @@ public class BookmarkServiceImpl implements BookmarkService {
         return userEntity.getBookmarks()
                 .stream()
                 .map(BookmarkEntity::getComic)
-                .map(comicServiceImpl::entityToDto)
+                .map(comicsMapper::entityToDto)
                 .toList();
     }
 
     @Override
     public Boolean isBookmarked(String username, String comicName) {
-        ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
-                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic with name: %s", comicName)));
+        ComicsEntity comicsEntity = comicService.getByName(comicName);
 
         UserEntity userEntity = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find user with username: %s", username)));

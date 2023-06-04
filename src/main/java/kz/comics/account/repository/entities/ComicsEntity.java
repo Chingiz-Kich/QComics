@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "comics")
+//@RedisHash("ComicsEntyti")
 public class ComicsEntity {
 
     @Id
