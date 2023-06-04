@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sun.jdi.request.InvalidRequestStateException;
+import kz.comics.account.mapper.ComicsMapper;
 import kz.comics.account.model.comics.ComicDto;
 import kz.comics.account.model.comics.ComicsType;
 import kz.comics.account.repository.entities.ComicsEntity;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,11 +34,12 @@ public class ComicServiceImpl implements ComicService {
 
     private final ComicsRepository comicsRepository;
     private final ObjectMapper objectMapper;
+    private final ComicsMapper comicsMapper;
 
 
     @Override
     @SneakyThrows
-    public ComicDto saveComic(ComicDto comicDto) {
+    public ComicsEntity saveComic(ComicDto comicDto) {
         log.info("Get comics to save: {}", objectMapper.writeValueAsString(comicDto));
 
         if (!comicDto.getImageCoverBase64().isBlank() && comicDto.getImageCoverBase64().startsWith("data:")) {
@@ -49,37 +52,41 @@ public class ComicServiceImpl implements ComicService {
         Optional<ComicsEntity> comics = comicsRepository.getComicsEntitiesByName(comicDto.getName());
         if (comics.isPresent()) throw new IllegalStateException(String.format("Comics with name: %s already exist", comicDto.getName()));
 
-        ComicsEntity comicsEntity = this.dtoToEntity(comicDto);
+        ComicsEntity comicsEntity = comicsMapper.dtoToEntity(comicDto);
 
         comicsEntity = comicsRepository.save(comicsEntity);
         log.info("Saved comics: {}", objectMapper.writeValueAsString(comicsEntity));
 
-        return this.entityToDto(comicsEntity);
+        return comicsEntity;
     }
 
     @Override
     @SneakyThrows
-    public ComicDto getComic(String comicName) {
+    @Cacheable(value = "comic", key = "#comicName")
+    public ComicsEntity getByName(String comicName) {
         log.info("Get comics name: {}", comicName);
 
         ComicsEntity comicsEntity = comicsRepository.getComicsEntitiesByName(comicName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Comics name %s not found", comicName)));
 
         log.info("Got comics from repository: {}", objectMapper.writeValueAsString(comicsEntity));
-        return this.entityToDto(comicsEntity);
+        return comicsEntity;
     }
 
     @Override
-    public List<ComicDto> getAll() {
-        List<ComicsEntity> comicsEntities = comicsRepository.findAll();
-
-        return comicsEntities.stream()
-                .map(this::entityToDto)
-                .toList();
+    public ComicsEntity getById(Integer id) {
+        return comicsRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find comic by id: %s", id)));
     }
 
     @Override
-    public ComicDto updateComic(ComicDto comicDto) {
+    @Cacheable(value = "comics")
+    public List<ComicsEntity> getAll() {
+        return comicsRepository.findAll();
+    }
+
+    @Override
+    public ComicsEntity updateComic(ComicDto comicDto) {
 
         Optional<ComicsEntity> comicsEntityOptional = comicsRepository.getComicsEntitiesByName(comicDto.getName());
         if (comicsEntityOptional.isEmpty()) throw new IllegalStateException(String.format("Comics with name: %s does not exist", comicDto.getName()));
@@ -106,12 +113,6 @@ public class ComicServiceImpl implements ComicService {
             comicsEntity.setRating(comicDto.getRating());
         }
 
-/*
-        if (comicDto.getRates() != null) {
-            comicsEntity.setRates(comicDto.getRates());
-        }
-*/
-
         if (comicDto.getType() != null) {
             comicsEntity.setType(comicDto.getType());
         }
@@ -122,17 +123,15 @@ public class ComicServiceImpl implements ComicService {
 
         comicsEntity.setIsUpdated(true);
 
-        comicsRepository.save(comicsEntity);
-
-        return this.entityToDto(comicsEntity);
+        return comicsRepository.save(comicsEntity);
     }
 
     @Override
-    public ComicDto delete(String name) {
+    public String delete(String name) {
         comicsRepository.deleteByName(name)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot delete comic with name: %s", name)));
 
-        return new ComicDto();
+        return name + " deleted";
     }
 
     @Override
@@ -142,7 +141,7 @@ public class ComicServiceImpl implements ComicService {
     }
 
     @Override
-    public List<ComicDto> findAll(String field, Boolean ascending, int page, int size) {
+    public List<ComicsEntity> findAll(String field, Boolean ascending, int page, int size) {
         Pageable pageable;
         if (ascending) pageable = PageRequest.of(page, size, Sort.by(field).ascending());
         else pageable = PageRequest.of(page, size, Sort.by(field).descending());
@@ -152,15 +151,12 @@ public class ComicServiceImpl implements ComicService {
         else comicsEntities = comicsRepository.findAll(ComicSpecification.orderByDesc(field), pageable);
 
 
-        return comicsEntities
-                .stream()
-                .map(this::entityToDto)
-                .toList();
+        return comicsEntities.stream().toList();
     }
 
     @Override
     @SneakyThrows
-    public List<ComicDto> findMapAll(Map<String, Object> filters, Pageable pageable) {
+    public List<ComicsEntity> findMapAll(Map<String, Object> filters, Pageable pageable) {
         Specification<ComicsEntity> spec = Specification.where(null);
 
         for (String key : filters.keySet()) {
@@ -182,12 +178,12 @@ public class ComicServiceImpl implements ComicService {
 
         Page<ComicsEntity> comicsEntities = comicsRepository.findAll(spec, pageable);
 
-        List<ComicDto> comicDtos =  comicsEntities
+/*        List<ComicDto> comicDtos =  comicsEntities
                 .stream()
                 .map(this::entityToDto)
-                .toList();
+                .toList();*/
 
-        List<ComicDto> reversedComicDtos = new ArrayList<>(comicDtos);
+        List<ComicsEntity> reversedComicDtos = new ArrayList<>(comicsEntities.stream().toList());
         Collections.reverse(reversedComicDtos);
 
         return reversedComicDtos;
@@ -230,52 +226,5 @@ public class ComicServiceImpl implements ComicService {
 
         comicsEntity.setRating(rating);
         comicsRepository.save(comicsEntity);
-    }
-
-
-    // FIXME: This shit should be in ComicsMapper !!!!
-    public ComicDto entityToDto(ComicsEntity comicsEntity) {
-        ComicDto comicDto = ComicDto
-                .builder()
-                .name(comicsEntity.getName())
-                .author(comicsEntity.getAuthor())
-                .genres(comicsEntity.getGenres().stream().toList())
-                //.imageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()))
-                .rating(comicsEntity.getRating())
-                .votes(comicsEntity.getVotes())
-                .description(comicsEntity.getDescription())
-                .type(comicsEntity.getType())
-                .publishedDate(comicsEntity.getPublishedDate())
-                .isUpdated(comicsEntity.getIsUpdated())
-                .build();
-
-        if (comicsEntity.getCoverImage() != null) {
-            comicDto.setImageCoverBase64(Base64.getEncoder().encodeToString(comicsEntity.getCoverImage()));
-        }
-
-        return comicDto;
-    }
-
-    // FIXME: This shit should be in ComicsMapper !!!!
-    public ComicsEntity dtoToEntity(ComicDto comicDto) {
-        ComicsEntity comicsEntity = ComicsEntity
-                .builder()
-                .name(comicDto.getName())
-                .author(comicDto.getAuthor())
-                .genres(new LinkedHashSet<>(comicDto.getGenres()))
-                //.coverImage((Base64.getDecoder().decode(comicDto.getImageCoverBase64())))
-                .rating(comicDto.getRating())
-                .votes(comicDto.getVotes())
-                .description(comicDto.getDescription())
-                .type(comicDto.getType())
-                .publishedDate(comicDto.getPublishedDate())
-                .isUpdated(false)
-                .build();
-
-        if (StringUtils.isNotBlank(comicDto.getImageCoverBase64())) {
-            comicsEntity.setCoverImage(Base64.getDecoder().decode(comicDto.getImageCoverBase64()));
-        }
-
-        return comicsEntity;
     }
 }
