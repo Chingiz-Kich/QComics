@@ -7,5 +7,4 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserUpdateByUsername extends UserUpdateRequest{
-    private String username;
 }
