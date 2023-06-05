@@ -35,8 +35,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
-    private final Map<String, UserEntity> cache = new HashMap<>();
-    private final Map<String, Integer> redis = new HashMap<>();
+    private final Map<String, UserEntity> userCache = new HashMap<>();
+    private final Map<String, Integer> codeCache = new HashMap<>();
     private static final Random random = new Random();
 
     @Override
@@ -63,15 +63,14 @@ public class AuthServiceImpl implements AuthService {
         mailDto.setSubject("Проверочный код");
         mailDto.setMsgBody("КОД: " + checkNumber);
 
-        redis.put(request.getUsername(), checkNumber);
-        cache.put(request.getUsername(), userEntity);
+        codeCache.put(request.getUsername(), checkNumber);
+        userCache.put(request.getUsername(), userEntity);
 
         CompletableFuture<Void> emailFuture = CompletableFuture.runAsync(() -> mailService.sendAuth(mailDto));
 
         // Wait for the email to be sent before returning the UserDto
         emailFuture.join();
 
-        userRepository.save(userEntity);
         return "Email sent";
     }
 
@@ -96,16 +95,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String validateNumber(String username, Integer number) {
 
-        if (Objects.equals(redis.get(username), number)) {
-            redis.remove(username);
-            cache.remove(username);
+        if (Objects.equals(codeCache.get(username), number)) {
+            codeCache.remove(username);
+            userCache.remove(username);
+            UserEntity userEntity = userCache.get(username);
+            userRepository.save(userEntity);
             return "User saved successfully";
         } else {
-            redis.remove(username);
-            cache.remove(username);
+            codeCache.remove(username);
+            userCache.remove(username);
 
-            UserEntity userEntity = cache.get(username);
-            userRepository.delete(userEntity);
             return "Failed";
         }
     }
