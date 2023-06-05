@@ -12,6 +12,7 @@ import kz.comics.account.repository.entities.ImageEntity;
 import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +69,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Cacheable(value = "image", key = "#id")
     public ImageDto getById(Integer id) {
         return imageMapper.toDto(imageRepository.getImageEntityById(id));
     }
@@ -79,6 +81,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Cacheable(value = "images", key = "#chapterName")
     public List<ImageDto> getAllByChapterNameAndComicName(String chapterName, String comicName) {
         ChapterEntity chapterEntity = chapterRepository.getByName(chapterName)
                 .orElseThrow(() -> new NoSuchElementException(String.format("Cannot find chapter with name: %s", chapterName)));
@@ -92,6 +95,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    //@Cacheable(value = "images", key = "#chapterName")
     public List<Integer> getAllIdsByChapterAndComicName(String chapterName, String comicName) {
         return this.getAllByChapterNameAndComicName(chapterName, comicName)
                 .stream()
