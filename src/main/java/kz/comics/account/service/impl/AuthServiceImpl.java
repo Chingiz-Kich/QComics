@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
 
         // Wait for the email to be sent before returning the UserDto
         emailFuture.join();
-
+        userRepository.save(userEntity);
         return "Email sent";
     }
 
