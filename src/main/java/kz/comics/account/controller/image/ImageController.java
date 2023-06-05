@@ -45,13 +45,13 @@ public class ImageController {
 
     @Operation(summary = "Saving all images")
     @PostMapping("/saveAll")
-    public ResponseEntity<List<Integer>> save(@RequestBody List<ImageSaveDto> imageSaveDtos) {
+    public ResponseEntity<List<Integer>> savell(@RequestBody List<ImageSaveDto> imageSaveDtos) {
         return ResponseEntity.ok(imageService.saveAll(imageSaveDtos));
     }
 
     @Operation(summary = "Get all images by chapter and comic name")
     @GetMapping("/all")
-    public ResponseEntity<List<ImageDto>> save(@RequestParam String chapterName, @RequestParam String comicName) {
+    public ResponseEntity<List<ImageDto>> allByChapterNameAndComicName(@RequestParam String chapterName, @RequestParam String comicName) {
         return ResponseEntity.ok(imageService.getAllByChapterNameAndComicName(chapterName, comicName));
     }
 
