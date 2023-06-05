@@ -98,13 +98,10 @@ public class AuthServiceImpl implements AuthService {
         if (Objects.equals(codeCache.get(username), number)) {
             codeCache.remove(username);
             userCache.remove(username);
-            UserEntity userEntity = userCache.get(username);
-            userRepository.save(userEntity);
             return "User saved successfully";
         } else {
             codeCache.remove(username);
             userCache.remove(username);
-
             return "Failed";
         }
     }
