@@ -114,17 +114,4 @@ public class RedisConfig {
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)));
     }
 
-    @Value("${REDIS_URL}")
-    private String redisUrl;
-
-    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisUrl);
-        redisConfig.setPassword(password);
-        redisConfig.setHostName(hostName);
-        redisConfig.setPort(port);
-        return new LettuceConnectionFactory(redisConfig);
-    }
-
-
 }

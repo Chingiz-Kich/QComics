@@ -113,4 +113,9 @@ public class ImageController {
     public ResponseEntity<List<Integer>> getAllIdsByChapterAndComicName(@RequestParam String chapterName, @RequestParam String comicName) {
         return ResponseEntity.ok(imageService.getAllIdsByChapterAndComicName(chapterName, comicName));
     }
+
+    @GetMapping("/cache/evict")
+    public String cacheEvict(@RequestParam String key) {
+        return imageService.cacheEvict(key);
+    }
 }

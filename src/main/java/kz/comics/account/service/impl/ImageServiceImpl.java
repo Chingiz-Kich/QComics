@@ -12,6 +12,7 @@ import kz.comics.account.repository.entities.ImageEntity;
 import kz.comics.account.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,5 +102,11 @@ public class ImageServiceImpl implements ImageService {
                 .stream()
                 .map(ImageDto::getId)
                 .toList();
+    }
+
+    @Override
+    @CacheEvict(value = "images", key = "#key")
+    public String cacheEvict(String key) {
+        return "value = \"images\", key = \"#chapterName\" cleared.";
     }
 }
